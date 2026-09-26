@@ -1,0 +1,1225 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MarketTalk - Flea Market Price Practice (A1 ESL)</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap');
+    
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: #0b0f19;
+      color: #f8fafc;
+    }
+
+    .font-mono-code {
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0f172a;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #1e293b;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #334155;
+    }
+
+    .card-glow-amber {
+      box-shadow: 0 0 30px -5px rgba(245, 158, 11, 0.15);
+    }
+    .card-glow-emerald {
+      box-shadow: 0 0 30px -5px rgba(16, 185, 129, 0.15);
+    }
+    .card-glow-indigo {
+      box-shadow: 0 0 30px -5px rgba(99, 102, 241, 0.15);
+    }
+
+    /* Printable Receipt Styles */
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+      #printable-receipt, #printable-receipt * {
+        visibility: visible;
+      }
+      #printable-receipt {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        background: #ffffff !important;
+        color: #0f172a !important;
+        padding: 24px;
+        box-shadow: none !important;
+        border: 2px dashed #0f172a !important;
+      }
+      .no-print {
+        display: none !important;
+      }
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col bg-slate-950 text-slate-100 antialiased selection:bg-amber-500 selection:text-slate-950">
+
+  <!-- HEADER & LIVE 10-MINUTE HUD -->
+  <header class="border-b border-slate-800/80 bg-slate-900/90 backdrop-blur-md sticky top-0 z-50 no-print">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex flex-wrap items-center justify-between gap-4">
+      
+      <!-- Brand & Title -->
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-amber-500 via-emerald-400 to-indigo-500 p-0.5 shadow-lg shadow-amber-500/20 flex items-center justify-center">
+          <div class="w-full h-full bg-slate-950 rounded-[14px] flex items-center justify-center">
+            <i class="fa-solid fa-store text-amber-400 text-lg"></i>
+          </div>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 class="font-extrabold text-lg tracking-tight bg-gradient-to-r from-white via-slate-200 to-amber-300 bg-clip-text text-transparent">MarketTalk</h1>
+            <span class="bg-amber-950 text-amber-300 text-[10px] font-bold px-2.5 py-0.5 rounded-full border border-amber-800">A1 ESL Activity</span>
+          </div>
+          <p class="text-xs text-slate-400 font-medium">Flea Market Price Practice — 10 Min Pair Activity</p>
+        </div>
+      </div>
+
+      <!-- Live 10-Minute HUD Timer & Phase Display -->
+      <div class="flex items-center gap-3 bg-slate-950/90 px-4 py-2 rounded-2xl border border-slate-800 shadow-inner">
+        <div class="text-right">
+          <div class="text-[10px] uppercase tracking-wider font-extrabold text-slate-400" id="hud-stage-title">Stage 1 of 4</div>
+          <div class="text-xs font-bold text-amber-400" id="hud-phase-name">Stall Prep & Role Setup</div>
+        </div>
+
+        <div class="h-8 w-px bg-slate-800 my-auto"></div>
+
+        <div class="flex items-center gap-3">
+          <div class="text-2xl font-black font-mono-code text-amber-400 tracking-wider bg-slate-900/90 px-3.5 py-1 rounded-xl border border-amber-500/30" id="hud-timer-display">10:00</div>
+          <div class="flex items-center gap-1">
+            <button id="btn-timer-toggle" onclick="toggleTimer()" title="Play/Pause Timer" class="w-8 h-8 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 flex items-center justify-center font-bold transition shadow-md shadow-amber-500/20">
+              <i class="fa-solid fa-play text-xs" id="timer-toggle-icon"></i>
+            </button>
+            <button onclick="resetTimer()" title="Reset Timer" class="w-8 h-8 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 flex items-center justify-center transition border border-slate-700">
+              <i class="fa-solid fa-rotate-right text-xs"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- MAIN NAVIGATION TABS -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 py-6 flex-1 w-full flex flex-col gap-6">
+
+    <nav class="grid grid-cols-2 lg:grid-cols-4 gap-2 bg-slate-900/80 p-1.5 rounded-2xl border border-slate-800 text-xs sm:text-sm font-bold no-print">
+      <button onclick="switchTab('setup')" id="tab-btn-setup" class="py-3 rounded-xl transition flex items-center justify-center gap-2 bg-amber-500 text-slate-950 shadow-lg shadow-amber-500/20">
+        <i class="fa-solid fa-sliders"></i> <span>1. Roles & Context</span>
+      </button>
+      <button onclick="switchTab('catalog')" id="tab-btn-catalog" class="py-3 rounded-xl transition flex items-center justify-center gap-2 text-slate-400 hover:text-white">
+        <i class="fa-solid fa-shop"></i> <span>2. Market Stall Catalog</span>
+      </button>
+      <button onclick="switchTab('wizard')" id="tab-btn-wizard" class="py-3 rounded-xl transition flex items-center justify-center gap-2 text-slate-400 hover:text-white">
+        <i class="fa-solid fa-comments"></i> <span>3. 20 Outcome Prompts</span>
+      </button>
+      <button onclick="switchTab('receipt')" id="tab-btn-receipt" class="py-3 rounded-xl transition flex items-center justify-center gap-2 text-slate-400 hover:text-white">
+        <i class="fa-solid fa-receipt"></i> <span>4. Register & Receipt</span>
+      </button>
+    </nav>
+
+    <!-- TAB 1: CONTEXT, ROLES & INSTRUCTIONS -->
+    <section id="tab-sec-setup" class="space-y-6">
+      
+      <!-- Context Banner -->
+      <div class="relative overflow-hidden bg-gradient-to-r from-amber-950 via-slate-900 to-indigo-950 border border-amber-500/30 p-6 sm:p-8 rounded-3xl card-glow-amber">
+        <div class="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+          <div class="space-y-3">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-900/60 border border-amber-700/50 text-amber-300 text-xs font-bold">
+              <i class="fa-solid fa-cart-shopping"></i> International Flea Market
+            </div>
+            <h2 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">Asking for & Giving Prices</h2>
+            <p class="text-xs sm:text-sm text-slate-300 max-w-3xl leading-relaxed">
+              Step into a vibrant international flea market! In <strong>10 minutes</strong>, you and your partner will practice 
+              buying and selling items. Practice singular vs. plural demonstratives (<em>this/that</em> vs <em>these/those</em>), 
+              numbers, currencies, discounts, payment methods, and calculating change.
+            </p>
+          </div>
+          <button onclick="switchTab('wizard'); startTimerIfNotStarted();" class="whitespace-nowrap px-6 py-3.5 bg-gradient-to-r from-amber-400 to-emerald-400 hover:from-amber-300 hover:to-emerald-300 text-slate-950 font-black text-sm rounded-2xl shadow-lg shadow-amber-400/20 transition flex items-center justify-center gap-2">
+            Start Market Wizard <i class="fa-solid fa-arrow-right"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Roles & Modes Selection Grid -->
+      <div class="grid lg:grid-cols-12 gap-6">
+        
+        <!-- Role Configuration Column -->
+        <div class="lg:col-span-5 bg-slate-900 border border-slate-800 p-6 rounded-3xl space-y-6">
+          <div class="border-b border-slate-800 pb-4">
+            <h3 class="font-bold text-white flex items-center gap-2 text-base">
+              <i class="fa-solid fa-user-gear text-amber-400"></i> Mode & Role Setup
+            </h3>
+            <p class="text-xs text-slate-400 mt-1">Select pair mode for classroom interaction or solo mode with speech synthesis.</p>
+          </div>
+
+          <!-- Practice Mode Selector -->
+          <div class="space-y-2">
+            <label class="text-xs font-bold text-slate-300 block">Practice Mode:</label>
+            <div class="grid grid-cols-2 gap-2 p-1 bg-slate-950 rounded-2xl border border-slate-800 text-xs font-bold">
+              <button onclick="setPracticeMode('pair')" id="mode-btn-pair" class="py-2.5 rounded-xl bg-amber-500 text-slate-950 transition flex items-center justify-center gap-1.5">
+                <i class="fa-solid fa-users"></i> Pair Practice
+              </button>
+              <button onclick="setPracticeMode('solo')" id="mode-btn-solo" class="py-2.5 rounded-xl text-slate-400 hover:text-white transition flex items-center justify-center gap-1.5">
+                <i class="fa-solid fa-user-ninja"></i> Solo Practice
+              </button>
+            </div>
+          </div>
+
+          <!-- Role Cards -->
+          <div class="grid sm:grid-cols-2 gap-3" id="role-radio-group">
+            <label class="cursor-pointer">
+              <input type="radio" name="student-role" value="A" checked onchange="handleRoleChange()" class="peer hidden">
+              <div class="p-4 rounded-2xl border border-slate-800 peer-checked:border-amber-500 peer-checked:bg-amber-950/40 bg-slate-950/60 hover:bg-slate-800/50 text-center space-y-2 transition">
+                <div class="w-10 h-10 mx-auto rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center font-bold text-lg">A</div>
+                <div class="font-bold text-sm text-white">Student A</div>
+                <div class="text-[11px] text-slate-400">Customer / Shopper<br>(Asks Cards 1–10 First)</div>
+              </div>
+            </label>
+
+            <label class="cursor-pointer">
+              <input type="radio" name="student-role" value="B" onchange="handleRoleChange()" class="peer hidden">
+              <div class="p-4 rounded-2xl border border-slate-800 peer-checked:border-emerald-500 peer-checked:bg-emerald-950/40 bg-slate-950/60 hover:bg-slate-800/50 text-center space-y-2 transition">
+                <div class="w-10 h-10 mx-auto rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold text-lg">B</div>
+                <div class="font-bold text-sm text-white">Student B</div>
+                <div class="text-[11px] text-slate-400">Vendor / Shopkeeper<br>(Answers Cards 1–10 First)</div>
+              </div>
+            </label>
+          </div>
+
+          <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 text-xs text-slate-300 space-y-1.5" id="role-info-box">
+            <!-- Dynamically rendered by JS -->
+          </div>
+        </div>
+
+        <!-- Activity Timeline & Instructions Column -->
+        <div class="lg:col-span-7 bg-slate-900 border border-slate-800 p-6 rounded-3xl space-y-5">
+          <div class="border-b border-slate-800 pb-4">
+            <h3 class="font-bold text-white flex items-center gap-2 text-base">
+              <i class="fa-solid fa-clock-rotate-left text-emerald-400"></i> 10-Minute Activity Flow
+            </h3>
+            <p class="text-xs text-slate-400 mt-1">Follow the time-chunked sequence for pair role-playing.</p>
+          </div>
+
+          <div class="grid sm:grid-cols-2 gap-3 text-xs">
+            <div class="p-4 rounded-2xl bg-slate-950 border border-slate-800 space-y-1">
+              <div class="text-[10px] font-mono-code font-bold text-amber-400 uppercase">Min 00:00 - 02:00</div>
+              <div class="font-bold text-white text-sm">1. Stall Prep & Setup</div>
+              <p class="text-slate-400">Review the Market Catalog. Check item price tags, singular/plural grammar rules, and currencies.</p>
+            </div>
+
+            <div class="p-4 rounded-2xl bg-slate-950 border border-slate-800 space-y-1">
+              <div class="text-[10px] font-mono-code font-bold text-emerald-400 uppercase">Min 02:00 - 05:00</div>
+              <div class="font-bold text-white text-sm">2. Round 1 Shopping</div>
+              <p class="text-slate-400">Student A asks Cards 1–10. Student B checks stall price sheet and responds with full A1 models.</p>
+            </div>
+
+            <div class="p-4 rounded-2xl bg-slate-950 border border-slate-800 space-y-1">
+              <div class="text-[10px] font-mono-code font-bold text-indigo-400 uppercase">Min 05:00 - 08:00</div>
+              <div class="font-bold text-white text-sm">3. Round 2 (Role Swap)</div>
+              <p class="text-slate-400">Swap roles! Student B asks Cards 11–20. Student A acts as the vendor and calculates totals.</p>
+            </div>
+
+            <div class="p-4 rounded-2xl bg-slate-950 border border-slate-800 space-y-1">
+              <div class="text-[10px] font-mono-code font-bold text-rose-400 uppercase">Min 08:00 - 10:00</div>
+              <div class="font-bold text-white text-sm">4. Receipt & Print Pass</div>
+              <p class="text-slate-400">Review total spending, calculate change, and print your Flea Market Shopping Receipt!</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- TAB 2: MARKET STALL CATALOG -->
+    <section id="tab-sec-catalog" class="hidden space-y-6">
+      
+      <!-- Catalog Header Banner -->
+      <div class="bg-slate-900 border border-slate-800 p-6 rounded-3xl flex flex-wrap items-center justify-between gap-4">
+        <div>
+          <h2 class="text-2xl font-extrabold text-white flex items-center gap-2">
+            <i class="fa-solid fa-tags text-amber-400"></i> Flea Market Item Stall Catalog
+          </h2>
+          <p class="text-xs text-slate-400 mt-1">Click any item card to see target demonstratives (<em>this/that</em> vs <em>these/those</em>) and full dialogue cues.</p>
+        </div>
+        <div class="flex items-center gap-2 text-xs font-bold font-mono-code">
+          <span class="bg-amber-950 text-amber-300 border border-amber-800 px-3 py-1.5 rounded-xl">Singular: "How much IS this/that?"</span>
+          <span class="bg-indigo-950 text-indigo-300 border border-indigo-800 px-3 py-1.5 rounded-xl">Plural: "How much ARE these/those?"</span>
+        </div>
+      </div>
+
+      <!-- Market Items Grid -->
+      <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4" id="market-catalog-grid">
+        <!-- Dynamically rendered by JS -->
+      </div>
+
+      <!-- Active Selected Item Inspector Modal/Box -->
+      <div id="catalog-item-inspector" class="bg-slate-900 border border-amber-500/30 p-6 rounded-3xl space-y-4 card-glow-amber">
+        <div class="text-center py-6 text-slate-500 italic text-xs">
+          Click any market stall item above to inspect demonstratives, pricing models, and grammar rules.
+        </div>
+      </div>
+
+    </section>
+
+    <!-- TAB 3: 20 OUTCOME PROMPTS WIZARD -->
+    <section id="tab-sec-wizard" class="hidden space-y-6">
+      
+      <!-- STATUS & ROUND BAR -->
+      <div class="flex flex-wrap items-center justify-between bg-slate-900 p-4 rounded-2xl border border-slate-800 gap-4">
+        <div class="flex items-center gap-3">
+          <span class="px-3 py-1 rounded-xl text-xs font-bold font-mono-code bg-amber-950 text-amber-300 border border-amber-700/50" id="prompt-round-badge">Round 1 (Min 02:00 - 05:00)</span>
+          <span class="text-xs sm:text-sm font-medium text-slate-300" id="prompt-role-turn-text">Student A Asks | Student B Answers</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <button onclick="navigatePrompt(-1)" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl text-xs font-bold transition flex items-center gap-1">
+            <i class="fa-solid fa-chevron-left"></i> Prev
+          </button>
+          <span class="text-xs font-bold font-mono-code text-amber-400 bg-slate-950 px-3 py-1.5 rounded-xl border border-slate-800" id="prompt-index-indicator">1 / 20</span>
+          <button onclick="navigatePrompt(1)" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl text-xs font-bold transition flex items-center gap-1">
+            Next <i class="fa-solid fa-chevron-right"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- MAIN PROMPT & INTERACTION GRID -->
+      <div class="grid lg:grid-cols-12 gap-6">
+        
+        <!-- PROMPT WORKSPACE (8 Cols) -->
+        <div class="lg:col-span-8 bg-slate-900 border border-slate-800 p-6 rounded-3xl space-y-6 shadow-2xl relative">
+          
+          <!-- Category & Target Grammar Pill -->
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <span class="bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 text-xs font-extrabold px-3.5 py-1 rounded-full uppercase tracking-wider" id="prompt-category-tag">Singular Item (Close)</span>
+            <span class="text-xs font-mono-code bg-slate-950 text-emerald-400 border border-emerald-900 px-3 py-1 rounded-xl" id="prompt-grammar-tag">Rule: "How much is this..." + $X</span>
+          </div>
+
+          <!-- Question Cue Box -->
+          <div class="space-y-1">
+            <div class="text-[11px] uppercase font-bold text-slate-400 tracking-wider">Shopper Question Cue</div>
+            <h3 class="text-xl sm:text-2xl font-black text-white" id="prompt-question-cue">"Excuse me, how much is this shirt?"</h3>
+          </div>
+
+          <!-- Dialogue Model Box -->
+          <div class="bg-slate-950 p-5 rounded-2xl border border-slate-800/80 space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-amber-400 flex items-center gap-1.5">
+                <i class="fa-solid fa-comments"></i> Target A1 Dialogue Model
+              </span>
+              <button onclick="speakCurrentDialogueModel()" class="text-xs bg-amber-950 hover:bg-amber-900 text-amber-300 px-3 py-1.5 rounded-xl border border-amber-800 transition flex items-center gap-1.5 font-semibold">
+                <i class="fa-solid fa-volume-high text-emerald-400"></i> Listen Audio Model
+              </button>
+            </div>
+            
+            <div class="space-y-2 text-xs sm:text-sm font-mono-code p-3.5 bg-slate-900/90 rounded-xl border border-slate-800/60" id="prompt-dialogue-box">
+              <!-- Dynamically populated dialogue lines -->
+            </div>
+          </div>
+
+          <!-- Response Input & Grammar Feedback -->
+          <div class="space-y-3">
+            <div class="flex items-center justify-between">
+              <label for="practice-response-input" class="text-xs font-bold text-slate-300">Practice / Type Response:</label>
+              <span class="text-[11px] text-slate-400" id="prompt-target-rule-hint">Keywords: "this", "is", "$"</span>
+            </div>
+            
+            <div class="flex gap-2">
+              <input type="text" id="practice-response-input" oninput="handleGrammarCheck()" placeholder="Type your price dialogue answer here..." class="flex-1 bg-slate-950 border border-slate-800 rounded-2xl px-4 py-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-amber-500 font-medium">
+              <button onclick="verifyAndLogTransaction()" class="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-xs px-5 rounded-2xl transition shadow-lg shadow-emerald-600/20 flex items-center gap-2 whitespace-nowrap">
+                <i class="fa-solid fa-cart-plus"></i> Verify & Log
+              </button>
+            </div>
+
+            <!-- Grammar Feedback Chip -->
+            <div id="grammar-live-feedback" class="text-xs font-medium text-slate-400 min-h-[20px] flex items-center gap-1.5">
+              <!-- Realtime keyword match indicator -->
+            </div>
+          </div>
+
+        </div>
+
+        <!-- SIDEBAR: CASH REGISTER LOGGED PURCHASES (4 Cols) -->
+        <div class="lg:col-span-4 bg-slate-900 border border-slate-800 p-5 rounded-3xl space-y-4 flex flex-col justify-between">
+          <div class="space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+              <h4 class="font-bold text-white text-sm flex items-center gap-2">
+                <i class="fa-solid fa-cash-register text-emerald-400"></i> Cash Register Log
+              </h4>
+              <span id="logged-facts-counter" class="text-xs font-mono-code bg-emerald-950 text-emerald-400 px-2.5 py-1 rounded-lg border border-emerald-800/50">0 / 20</span>
+            </div>
+
+            <!-- Scrollable Logged List -->
+            <div id="logged-facts-scrollable" class="space-y-2 text-xs max-h-[320px] overflow-y-auto pr-1">
+              <div class="text-slate-500 text-center py-10 italic">
+                No items logged yet.<br>Ask questions and click "Verify & Log".
+              </div>
+            </div>
+          </div>
+
+          <button onclick="switchTab('receipt')" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-200 py-3 rounded-2xl font-bold text-xs transition border border-slate-700 flex items-center justify-center gap-2">
+            <span>View Cash Register & Receipt</span> <i class="fa-solid fa-arrow-right"></i>
+          </button>
+        </div>
+
+      </div>
+
+      <!-- 20-PROMPT MATRIX GRID -->
+      <div class="bg-slate-900 border border-slate-800 p-5 rounded-3xl space-y-3">
+        <div class="flex items-center justify-between text-xs font-bold text-slate-400 uppercase tracking-wider">
+          <span>Prompts Quick Navigation Matrix (1 - 20)</span>
+          <span class="text-slate-500 font-normal">Round 1: 1-10 (Customer A) | Round 2: 11-20 (Customer B)</span>
+        </div>
+        <div class="grid grid-cols-5 sm:grid-cols-10 md:grid-cols-20 gap-2" id="prompt-matrix-grid">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+    </section>
+
+    <!-- TAB 4: REGISTER & PRINTABLE SHOPPING RECEIPT -->
+    <section id="tab-sec-receipt" class="hidden space-y-6">
+      
+      <!-- Printable Receipt Box -->
+      <div id="printable-receipt" class="bg-slate-900 border border-slate-800 p-6 sm:p-10 rounded-3xl max-w-4xl mx-auto space-y-8 card-glow-amber">
+        
+        <!-- Receipt Header -->
+        <div class="text-center space-y-3 border-b border-slate-800/80 pb-6">
+          <div class="inline-flex items-center justify-center w-16 h-16 rounded-3xl bg-gradient-to-tr from-amber-400 via-emerald-400 to-indigo-500 text-slate-950 shadow-xl text-2xl font-black">
+            <i class="fa-solid fa-receipt"></i>
+          </div>
+          <h2 class="text-2xl sm:text-3xl font-black text-white uppercase tracking-tight">International Flea Market Official Receipt</h2>
+          <p class="text-xs sm:text-sm text-slate-400">CEFR A1 Price Mastery Certificate & Itemized Shopping Summary</p>
+        </div>
+
+        <!-- Metrics & Spending Breakdown Row -->
+        <div class="grid sm:grid-cols-3 gap-4 bg-slate-950 p-5 rounded-2xl border border-slate-800 text-center">
+          <div class="space-y-1">
+            <div class="text-[10px] uppercase font-bold text-slate-500">Prompts Completed</div>
+            <div class="text-3xl font-black font-mono-code text-amber-400" id="receipt-completion-count">0 / 20</div>
+          </div>
+          <div class="space-y-1 border-y sm:border-y-0 sm:border-x border-slate-800 py-3 sm:py-0">
+            <div class="text-[10px] uppercase font-bold text-slate-500">Grammar Rule Mastery</div>
+            <div class="text-3xl font-black font-mono-code text-emerald-400" id="receipt-mastery-score">0%</div>
+          </div>
+          <div class="space-y-1">
+            <div class="text-[10px] uppercase font-bold text-slate-500">Total Spent</div>
+            <div class="text-3xl font-black font-mono-code text-indigo-400" id="receipt-total-spent">$0.00</div>
+          </div>
+        </div>
+
+        <!-- Itemized Logged Purchases Table -->
+        <div class="space-y-3">
+          <h4 class="font-bold text-amber-400 text-xs uppercase tracking-wider flex items-center gap-1.5">
+            <i class="fa-solid fa-list-ol"></i> Itemized Flea Market Purchases & Price Inquiries
+          </h4>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs border-collapse">
+              <thead>
+                <tr class="border-b border-slate-800 text-slate-400 font-mono-code">
+                  <th class="py-2.5 px-3">#</th>
+                  <th class="py-2.5 px-3">Target Objective</th>
+                  <th class="py-2.5 px-3">Logged Price Dialogue Statement</th>
+                  <th class="py-2.5 px-3 text-right">Status</th>
+                </tr>
+              </thead>
+              <tbody id="receipt-itemized-tbody" class="divide-y divide-slate-800/60">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Receipt Payment & Change Calculation -->
+        <div class="grid sm:grid-cols-2 gap-6 bg-slate-950 p-5 rounded-2xl border border-slate-800 text-xs">
+          <div class="space-y-2">
+            <div class="font-bold text-slate-300 uppercase tracking-wider text-[10px]">Payment Method Breakdown:</div>
+            <div class="flex justify-between text-slate-400"><span>Cash Payments Accepted:</span><span class="text-white font-mono-code">Yes ($20 Bills)</span></div>
+            <div class="flex justify-between text-slate-400"><span>Credit Card Accepted:</span><span class="text-white font-mono-code">Visa / MasterCard</span></div>
+            <div class="flex justify-between text-slate-400"><span>Paper Bag Fee:</span><span class="text-white font-mono-code">$0.50</span></div>
+          </div>
+
+          <div class="space-y-2 border-t sm:border-t-0 sm:border-l border-slate-800 pt-3 sm:pt-0 sm:pl-6">
+            <div class="font-bold text-slate-300 uppercase tracking-wider text-[10px]">Transaction Calculation:</div>
+            <div class="flex justify-between text-slate-400"><span>Subtotal Logged:</span><span class="text-white font-mono-code" id="calc-subtotal">$0.00</span></div>
+            <div class="flex justify-between text-slate-400"><span>Tax / Discount Applied:</span><span class="text-emerald-400 font-mono-code">-$10.00 (Book Sale)</span></div>
+            <div class="flex justify-between text-slate-200 font-bold text-sm pt-1 border-t border-slate-800">
+              <span>Final Total Due:</span>
+              <span class="text-amber-400 font-mono-code text-base" id="calc-final-total">$0.00</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Certificate Footer Signatures -->
+        <div class="flex items-center justify-between border-t border-slate-800 pt-6 text-[11px] text-slate-500 font-mono-code">
+          <div>Verified Vendor: <strong>Flea Market Stall #12</strong></div>
+          <div>Date: <span id="receipt-date-text">Current Session</span></div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex flex-wrap items-center justify-center gap-4 no-print pt-2">
+          <button onclick="window.print()" class="px-6 py-3 bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs rounded-2xl border border-slate-700 transition flex items-center gap-2">
+            <i class="fa-solid fa-print text-amber-400"></i> Print Receipt & Certificate
+          </button>
+          <button onclick="resetFullSession()" class="px-6 py-3 bg-gradient-to-r from-amber-500 to-emerald-500 hover:from-amber-400 hover:to-emerald-400 text-slate-950 font-bold text-xs rounded-2xl shadow-lg transition flex items-center gap-2">
+            <i class="fa-solid fa-rotate-right"></i> Start New Shopping Session
+          </button>
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="border-t border-slate-800 bg-slate-950 py-4 text-center text-xs text-slate-500 no-print">
+    <div class="max-w-7xl mx-auto px-4 flex flex-wrap items-center justify-between gap-2">
+      <span>MarketTalk ESL Activity — Target: A1 "Asking for & Giving Prices" (10-Minute Pair Sync)</span>
+      <span class="font-mono-code text-[11px] text-slate-600">CEFR A1 • Demonstratives, Currencies & Change</span>
+    </div>
+  </footer>
+
+  <script>
+    // -------------------------------------------------------------------------
+    // 1. DATASETS & STALL CATALOG PRODUCTS
+    // -------------------------------------------------------------------------
+
+    const marketStallCatalog = [
+      { id: "shirt", name: "T-Shirt", type: "singular", price: 15, icon: "fa-shirt", close: "this shirt", far: "that shirt", note: "Standard Cotton T-shirt" },
+      { id: "jacket", name: "Winter Jacket", type: "singular", price: 50, icon: "fa-vest", close: "this jacket", far: "that jacket", note: "Warm Leather Jacket" },
+      { id: "shoes", name: "Running Shoes", type: "plural", price: 30, icon: "fa-shoe-prints", close: "these shoes", far: "those shoes", note: "Pair of Athletic Shoes" },
+      { id: "apples", name: "Fresh Apples", type: "plural", price: 3, icon: "fa-apple-whole", close: "these apples", far: "those apples", note: "$3 per kilogram" },
+      { id: "hat", name: "Sun Hat", type: "singular", price: 10, icon: "fa-hat-cowboy", close: "this hat", far: "that hat", note: "Summer Straw Hat" },
+      { id: "coffee", name: "Cup of Coffee", type: "singular", price: 4, icon: "fa-mug-hot", close: "this coffee", far: "that coffee", note: "Hot Espresso Cup" },
+      { id: "magnet", name: "Souvenir Magnet", type: "singular", price: 2, icon: "fa-magnet", close: "this magnet", far: "that magnet", note: "$2 each unit" },
+      { id: "notebook_pen", name: "Notebook & Pen", type: "singular", price: 7, icon: "fa-book-open", close: "this set", far: "that set", note: "Notebook ($5) + Pen ($2)" },
+      { id: "watch", name: "Luxury Watch", type: "singular", price: 120, icon: "fa-clock", close: "this watch", far: "that watch", note: "High-end Swiss watch" },
+      { id: "postcards", name: "Postcards", type: "plural", price: 1, icon: "fa-note-sticky", close: "these postcards", far: "those postcards", note: "Very cheap souvenirs" },
+      { id: "bags_pair", name: "Blue vs Red Bag", type: "singular", price: 15, icon: "fa-bag-shopping", close: "this blue bag", far: "that red bag", note: "Blue ($15) vs Red ($20)" },
+      { id: "keychains", name: "Keychains", type: "plural", price: 7, icon: "fa-key", close: "these keychains", far: "those keychains", note: "1 for $3 / 3 for $7" },
+      { id: "book", name: "Novel Book", type: "singular", price: 10, icon: "fa-book", close: "this book", far: "that book", note: "Discounted from $20 to $10" },
+      { id: "bag_paper", name: "Paper Bag", type: "singular", price: 0.50, icon: "fa-box-archive", close: "this paper bag", far: "that paper bag", note: "50 cents fee" },
+      { id: "umbrella", name: "Umbrella", type: "singular", price: 10, icon: "fa-umbrella", close: "this umbrella", far: "that umbrella", note: "Rain Protection" },
+      { id: "sunglasses", name: "Sunglasses", type: "plural", price: 15, icon: "fa-glasses", close: "these sunglasses", far: "those sunglasses", note: "UV Protection" }
+    ];
+
+    const outcomePrompts = [
+      {
+        id: 1,
+        cat: "Singular Item (Close)",
+        cue: "Excuse me, how much is this shirt?",
+        targetRule: "Use 'this' + singular 'is'",
+        keywords: ["this", "is", "15", "shirt", "$15"],
+        priceVal: 15,
+        getModel: () => ({
+          a: "A: Excuse me, how much is this shirt?",
+          b: "B: It is $15."
+        })
+      },
+      {
+        id: 2,
+        cat: "Singular Item (Far)",
+        cue: "How much is that jacket over there?",
+        targetRule: "Use 'that' + singular 'is'",
+        keywords: ["that", "is", "50", "jacket", "$50"],
+        priceVal: 50,
+        getModel: () => ({
+          a: "A: How much is that jacket over there?",
+          b: "B: It is $50."
+        })
+      },
+      {
+        id: 3,
+        cat: "Plural Item (Close)",
+        cue: "How much are these shoes?",
+        targetRule: "Use 'these' + plural 'are'",
+        keywords: ["these", "are", "30", "shoes", "$30", "they"],
+        priceVal: 30,
+        getModel: () => ({
+          a: "A: How much are these shoes?",
+          b: "B: They are $30."
+        })
+      },
+      {
+        id: 4,
+        cat: "Plural Item (Far)",
+        cue: "How much are those apples?",
+        targetRule: "Use 'those' + plural 'are'",
+        keywords: ["those", "are", "3", "apples", "$3", "kilo"],
+        priceVal: 3,
+        getModel: () => ({
+          a: "A: How much are those apples?",
+          b: "B: They are $3 a kilo."
+        })
+      },
+      {
+        id: 5,
+        cat: "Confirm Price",
+        cue: "Is this hat $10?",
+        targetRule: "Confirm price with 'Yes, it is' / 'No, it is'",
+        keywords: ["yes", "is", "10", "hat", "$10"],
+        priceVal: 10,
+        getModel: () => ({
+          a: "A: Is this hat $10?",
+          b: "B: Yes, it is $10."
+        })
+      },
+      {
+        id: 6,
+        cat: "Food / Drink Item",
+        cue: "How much is a cup of coffee?",
+        targetRule: "Use 'a cup of...' + 'is'",
+        keywords: ["cup", "coffee", "is", "4", "$4"],
+        priceVal: 4,
+        getModel: () => ({
+          a: "A: How much is a cup of coffee?",
+          b: "B: It is $4."
+        })
+      },
+      {
+        id: 7,
+        cat: "Unit Price",
+        cue: "How much is one souvenir magnet?",
+        targetRule: "Express unit rate 'each'",
+        keywords: ["one", "magnet", "is", "2", "each", "$2"],
+        priceVal: 2,
+        getModel: () => ({
+          a: "A: How much is one souvenir magnet?",
+          b: "B: It is $2 each."
+        })
+      },
+      {
+        id: 8,
+        cat: "Multiple Items Total",
+        cue: "How much is a notebook and a pen?",
+        targetRule: "Add prices: $5 + $2 = $7",
+        keywords: ["notebook", "pen", "total", "7", "$7"],
+        priceVal: 7,
+        getModel: () => ({
+          a: "A: How much is a notebook and a pen?",
+          b: "B: The notebook is $5 and the pen is $2. Total is $7."
+        })
+      },
+      {
+        id: 9,
+        cat: "Express Price Reaction",
+        cue: "How much is this watch?",
+        targetRule: "Express high price: 'That is expensive!'",
+        keywords: ["expensive", "120", "$120", "watch"],
+        priceVal: 120,
+        getModel: () => ({
+          a: "A: How much is this watch?",
+          b: "B: It is $120. A: $120? That is very expensive!"
+        })
+      },
+      {
+        id: 10,
+        cat: "Express Price Reaction",
+        cue: "How much are these postcards?",
+        targetRule: "Express low price: 'That is cheap!'",
+        keywords: ["cheap", "1", "$1", "postcards"],
+        priceVal: 1,
+        getModel: () => ({
+          a: "A: These postcards are $1.",
+          b: "B: $1? Wow, that is very cheap!"
+        })
+      },
+      {
+        id: 11,
+        cat: "Compare Prices",
+        cue: "Which one is cheaper, the blue bag or the red bag?",
+        targetRule: "Use comparative 'cheaper'",
+        keywords: ["cheaper", "blue", "bag", "15"],
+        priceVal: 15,
+        getModel: () => ({
+          a: "A: Which one is cheaper, the blue bag or the red bag?",
+          b: "B: The blue bag is $15 and the red bag is $20. The blue bag is cheaper."
+        })
+      },
+      {
+        id: 12,
+        cat: "Package / Bundle Deal",
+        cue: "How much are three keychains?",
+        targetRule: "Express package discount deal",
+        keywords: ["three", "keychains", "7", "$7"],
+        priceVal: 7,
+        getModel: () => ({
+          a: "A: How much are three keychains?",
+          b: "B: One is $3, but three are $7."
+        })
+      },
+      {
+        id: 13,
+        cat: "Currency Type Inquiry",
+        cue: "Is the price in dollars or euros?",
+        targetRule: "Confirm currency unit",
+        keywords: ["dollars", "euros", "price"],
+        priceVal: 0,
+        getModel: () => ({
+          a: "A: Is the price in dollars or euros?",
+          b: "B: The price is in dollars."
+        })
+      },
+      {
+        id: 14,
+        cat: "Discount / Sale Inquiry",
+        cue: "Is there a discount on this book?",
+        targetRule: "Express sale price: 'It was $X, now $Y'",
+        keywords: ["discount", "sale", "book", "10", "$10"],
+        priceVal: 10,
+        getModel: () => ({
+          a: "A: Is there a discount on this book?",
+          b: "B: Yes! It was $20, but today it is $10."
+        })
+      },
+      {
+        id: 15,
+        cat: "Total Bill Request",
+        cue: "How much is everything altogether?",
+        targetRule: "Use 'altogether' / 'your total is'",
+        keywords: ["altogether", "total", "42", "$42"],
+        priceVal: 42,
+        getModel: () => ({
+          a: "A: How much is everything altogether?",
+          b: "B: Your total is $42."
+        })
+      },
+      {
+        id: 16,
+        cat: "Cash Payment",
+        cue: "Can I pay with cash?",
+        targetRule: "Confirm cash payment option",
+        keywords: ["cash", "pay", "yes", "okay"],
+        priceVal: 0,
+        getModel: () => ({
+          a: "A: Can I pay with cash?",
+          b: "B: Yes, cash is okay!"
+        })
+      },
+      {
+        id: 17,
+        cat: "Credit Card Payment",
+        cue: "Do you accept credit cards?",
+        targetRule: "Confirm credit card option",
+        keywords: ["credit", "cards", "accept"],
+        priceVal: 0,
+        getModel: () => ({
+          a: "A: Do you accept credit cards?",
+          b: "B: Yes, we accept credit cards."
+        })
+      },
+      {
+        id: 18,
+        cat: "Calculate Change",
+        cue: "The total is $16. Here is $20. How much is my change?",
+        targetRule: "Calculate change: $20 - $16 = $4",
+        keywords: ["change", "4", "$4", "20"],
+        priceVal: 4,
+        getModel: () => ({
+          a: "A: The total is $16. Here is $20. How much is my change?",
+          b: "B: Thank you! Your change is $4."
+        })
+      },
+      {
+        id: 19,
+        cat: "Extra Shopping Fee",
+        cue: "How much is a paper shopping bag?",
+        targetRule: "Express cent prices (50 cents / $0.50)",
+        keywords: ["paper", "bag", "cents", "50", "0.50"],
+        priceVal: 0.50,
+        getModel: () => ({
+          a: "A: How much is a paper shopping bag?",
+          b: "B: A paper bag is 50 cents."
+        })
+      },
+      {
+        id: 20,
+        cat: "Final Purchase Decision",
+        cue: "OK, I will buy this umbrella for $10!",
+        targetRule: "Use 'I will buy this...' + $X",
+        keywords: ["will", "buy", "umbrella", "10", "$10"],
+        priceVal: 10,
+        getModel: () => ({
+          a: "A: OK, I will buy this umbrella for $10!",
+          b: "B: Great! Thank you for shopping at our flea market!"
+        })
+      }
+    ];
+
+    // -------------------------------------------------------------------------
+    // 2. GLOBAL APP STATE & TIMER ENGINE
+    // -------------------------------------------------------------------------
+    let practiceMode = 'pair'; // 'pair' or 'solo'
+    let studentRole = 'A'; // 'A' or 'B'
+    let currentPromptIdx = 0;
+    let loggedTransactions = {}; // promptId -> string response
+    
+    let timerTotalSeconds = 600; // 10 mins
+    let timerRemaining = 600;
+    let timerInterval = null;
+    let isTimerRunning = false;
+
+    window.onload = function() {
+      renderMarketCatalogGrid();
+      renderPromptMatrixGrid();
+      loadPrompt(0);
+      updateRoleInfoBox();
+      document.getElementById('receipt-date-text').innerText = new Date().toLocaleDateString();
+    };
+
+    function startTimerIfNotStarted() {
+      if (!isTimerRunning && timerRemaining > 0) {
+        toggleTimer();
+      }
+    }
+
+    function toggleTimer() {
+      const toggleIcon = document.getElementById('timer-toggle-icon');
+      if (isTimerRunning) {
+        clearInterval(timerInterval);
+        isTimerRunning = false;
+        toggleIcon.className = "fa-solid fa-play text-xs";
+      } else {
+        isTimerRunning = true;
+        toggleIcon.className = "fa-solid fa-pause text-xs";
+        timerInterval = setInterval(tickTimer, 1000);
+      }
+    }
+
+    function resetTimer() {
+      clearInterval(timerInterval);
+      isTimerRunning = false;
+      timerRemaining = 600;
+      document.getElementById('timer-toggle-icon').className = "fa-solid fa-play text-xs";
+      updateTimerDisplay();
+    }
+
+    function tickTimer() {
+      if (timerRemaining <= 0) {
+        clearInterval(timerInterval);
+        isTimerRunning = false;
+        document.getElementById('timer-toggle-icon').className = "fa-solid fa-play text-xs";
+        updateTimerDisplay();
+        switchTab('receipt');
+        return;
+      }
+      timerRemaining--;
+      updateTimerDisplay();
+    }
+
+    function updateTimerDisplay() {
+      const m = Math.floor(timerRemaining / 60).toString().padStart(2, '0');
+      const s = (timerRemaining % 60).toString().padStart(2, '0');
+      document.getElementById('hud-timer-display').innerText = `${m}:${s}`;
+
+      const stageTitle = document.getElementById('hud-stage-title');
+      const phaseName = document.getElementById('hud-phase-name');
+
+      if (timerRemaining > 480) { // 00:00 - 02:00
+        stageTitle.innerText = "Stage 1 of 4";
+        phaseName.innerText = "Stall Prep & Role Setup";
+      } else if (timerRemaining > 300) { // 02:00 - 05:00
+        stageTitle.innerText = "Stage 2 of 4";
+        phaseName.innerText = "Round 1 (Customer A)";
+      } else if (timerRemaining > 120) { // 05:00 - 08:00
+        stageTitle.innerText = "Stage 3 of 4";
+        phaseName.innerText = "Round 2: Role Swap (Customer B)";
+      } else { // 08:00 - 10:00
+        stageTitle.innerText = "Stage 4 of 4";
+        phaseName.innerText = "Receipt & Register Summary";
+      }
+    }
+
+    // -------------------------------------------------------------------------
+    // 3. TABS & MODE HANDLERS
+    // -------------------------------------------------------------------------
+    function switchTab(tab) {
+      document.getElementById('tab-sec-setup').classList.add('hidden');
+      document.getElementById('tab-sec-catalog').classList.add('hidden');
+      document.getElementById('tab-sec-wizard').classList.add('hidden');
+      document.getElementById('tab-sec-receipt').classList.add('hidden');
+
+      const tabs = ['setup', 'catalog', 'wizard', 'receipt'];
+      const inactiveClass = "py-3 rounded-xl transition flex items-center justify-center gap-2 text-slate-400 hover:text-white";
+      const activeClass = "py-3 rounded-xl transition flex items-center justify-center gap-2 bg-amber-500 text-slate-950 shadow-lg shadow-amber-500/20 font-extrabold";
+
+      tabs.forEach(t => {
+        const btn = document.getElementById(`tab-btn-${t}`);
+        if (btn) btn.className = inactiveClass;
+      });
+
+      document.getElementById(`tab-sec-${tab}`).classList.remove('hidden');
+      document.getElementById(`tab-btn-${tab}`).className = activeClass;
+
+      if (tab === 'receipt') renderReceiptCertificate();
+    }
+
+    function setPracticeMode(mode) {
+      practiceMode = mode;
+      const btnPair = document.getElementById('mode-btn-pair');
+      const btnSolo = document.getElementById('mode-btn-solo');
+
+      if (mode === 'pair') {
+        btnPair.className = "py-2.5 rounded-xl bg-amber-500 text-slate-950 transition flex items-center justify-center gap-1.5";
+        btnSolo.className = "py-2.5 rounded-xl text-slate-400 hover:text-white transition flex items-center justify-center gap-1.5";
+      } else {
+        btnSolo.className = "py-2.5 rounded-xl bg-amber-500 text-slate-950 transition flex items-center justify-center gap-1.5";
+        btnPair.className = "py-2.5 rounded-xl text-slate-400 hover:text-white transition flex items-center justify-center gap-1.5";
+      }
+      updateRoleInfoBox();
+    }
+
+    function handleRoleChange() {
+      const radios = document.getElementsByName('student-role');
+      for (let r of radios) {
+        if (r.checked) {
+          studentRole = r.value;
+          break;
+        }
+      }
+      updateRoleInfoBox();
+      updatePromptRoleHeader();
+    }
+
+    function updateRoleInfoBox() {
+      const box = document.getElementById('role-info-box');
+      if (practiceMode === 'solo') {
+        box.innerHTML = `
+          <div class="font-bold text-amber-400">Solo Practice Mode Active:</div>
+          <p class="text-slate-300">Practice asking and answering both roles. Use the <strong>"Listen Audio Model"</strong> button to hear pronunciation.</p>
+        `;
+      } else if (studentRole === 'A') {
+        box.innerHTML = `
+          <div class="font-bold text-amber-400">Student A (Customer):</div>
+          <p class="text-slate-300">You ask price questions for <strong>Cards 1–10</strong>. At Minute 05:00 (Card #11), you swap to become the vendor.</p>
+        `;
+      } else {
+        box.innerHTML = `
+          <div class="font-bold text-emerald-400">Student B (Vendor):</div>
+          <p class="text-slate-300">You answer price questions using the stall list for <strong>Cards 1–10</strong>. At Minute 05:00, you swap to become the customer.</p>
+        `;
+      }
+    }
+
+    // -------------------------------------------------------------------------
+    // 4. MARKET STALL CATALOG RENDERER
+    // -------------------------------------------------------------------------
+    function renderMarketCatalogGrid() {
+      const grid = document.getElementById('market-catalog-grid');
+      grid.innerHTML = '';
+
+      marketStallCatalog.forEach(item => {
+        const card = document.createElement('div');
+        card.onclick = () => inspectCatalogItem(item);
+        card.className = "bg-slate-900 border border-slate-800 hover:border-amber-500/50 p-4 rounded-2xl cursor-pointer transition space-y-3 hover:bg-slate-800/50 flex flex-col justify-between";
+
+        const isPlural = item.type === "plural";
+
+        card.innerHTML = `
+          <div class="space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-[10px] font-mono-code px-2 py-0.5 rounded-full font-bold ${isPlural ? 'bg-indigo-950 text-indigo-300 border border-indigo-800' : 'bg-amber-950 text-amber-300 border border-amber-800'}">
+                ${isPlural ? 'Plural (these/those)' : 'Singular (this/that)'}
+              </span>
+              <span class="text-base font-black text-amber-400 font-mono-code">$${item.price}</span>
+            </div>
+            <div class="w-10 h-10 rounded-xl bg-slate-950 border border-slate-800 text-amber-400 flex items-center justify-center text-lg">
+              <i class="fa-solid ${item.icon}"></i>
+            </div>
+            <div class="font-bold text-sm text-white">${item.name}</div>
+            <div class="text-[11px] text-slate-400 line-clamp-1">${item.note}</div>
+          </div>
+          <div class="text-[10px] text-slate-500 font-mono-code border-t border-slate-800/80 pt-2 flex items-center justify-between">
+            <span>Click to inspect</span>
+            <i class="fa-solid fa-arrow-right text-slate-600"></i>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    function inspectCatalogItem(item) {
+      const box = document.getElementById('catalog-item-inspector');
+      const isPlural = item.type === "plural";
+
+      box.innerHTML = `
+        <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800 pb-3">
+          <div class="flex items-center gap-3">
+            <div class="w-12 h-12 rounded-2xl bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center justify-center text-xl">
+              <i class="fa-solid ${item.icon}"></i>
+            </div>
+            <div>
+              <h4 class="font-extrabold text-white text-lg">${item.name}</h4>
+              <p class="text-xs text-slate-400">${item.note}</p>
+            </div>
+          </div>
+          <div class="text-right">
+            <div class="text-2xl font-black font-mono-code text-amber-400">$${item.price}</div>
+            <span class="text-[10px] font-mono-code uppercase text-emerald-400 font-bold">In Stock at Flea Market</span>
+          </div>
+        </div>
+
+        <div class="grid sm:grid-cols-2 gap-4 text-xs pt-1">
+          <div class="p-3.5 bg-slate-950 rounded-2xl border border-slate-800 space-y-1.5">
+            <div class="text-[10px] uppercase font-bold text-indigo-400">Close Demonstrative Cue (Near)</div>
+            <div class="font-bold text-white font-mono-code">"How much ${isPlural ? 'are' : 'is'} <span class="text-amber-400">${item.close}</span>?"</div>
+            <div class="text-slate-400 text-[11px]">Vendor answer: "${isPlural ? 'They are' : 'It is'} $${item.price}."</div>
+          </div>
+
+          <div class="p-3.5 bg-slate-950 rounded-2xl border border-slate-800 space-y-1.5">
+            <div class="text-[10px] uppercase font-bold text-rose-400">Far Demonstrative Cue (Over there)</div>
+            <div class="font-bold text-white font-mono-code">"How much ${isPlural ? 'are' : 'is'} <span class="text-amber-400">${item.far}</span>?"</div>
+            <div class="text-slate-400 text-[11px]">Vendor answer: "${isPlural ? 'They are' : 'It is'} $${item.price}."</div>
+          </div>
+        </div>
+      `;
+    }
+
+    // -------------------------------------------------------------------------
+    // 5. 20 OUTCOME PROMPTS MATRIX & WIZARD
+    // -------------------------------------------------------------------------
+    function renderPromptMatrixGrid() {
+      const grid = document.getElementById('prompt-matrix-grid');
+      grid.innerHTML = '';
+
+      outcomePrompts.forEach((p, idx) => {
+        const btn = document.createElement('button');
+        btn.id = `pmatrix-btn-${idx}`;
+        btn.onclick = () => loadPrompt(idx);
+        btn.className = `py-2 rounded-xl text-xs font-mono-code font-bold transition border ${
+          idx === 0 
+            ? 'bg-amber-500 border-amber-400 text-slate-950 shadow-md shadow-amber-500/30' 
+            : 'bg-slate-950 border-slate-800 text-slate-400 hover:text-white'
+        }`;
+        btn.innerText = p.id;
+        grid.appendChild(btn);
+      });
+    }
+
+    function loadPrompt(idx) {
+      currentPromptIdx = idx;
+      const p = outcomePrompts[idx];
+      const model = p.getModel();
+
+      document.getElementById('prompt-index-indicator').innerText = `${p.id} / 20`;
+      document.getElementById('prompt-category-tag').innerText = p.cat;
+      document.getElementById('prompt-grammar-tag').innerText = `Rule: ${p.targetRule}`;
+      document.getElementById('prompt-question-cue').innerText = `"${p.cue}"`;
+
+      document.getElementById('prompt-dialogue-box').innerHTML = `
+        <div class="text-slate-300">${model.a}</div>
+        <div class="text-emerald-300 font-semibold">${model.b}</div>
+      `;
+
+      const input = document.getElementById('practice-response-input');
+      input.value = loggedTransactions[p.id] || "";
+      handleGrammarCheck();
+
+      // Matrix Highlights
+      outcomePrompts.forEach((_, i) => {
+        const btn = document.getElementById(`pmatrix-btn-${i}`);
+        if (btn) {
+          if (i === idx) {
+            btn.className = "py-2 rounded-xl text-xs font-mono-code font-bold bg-amber-500 border-amber-400 text-slate-950 shadow-md shadow-amber-500/30";
+          } else if (loggedTransactions[i + 1]) {
+            btn.className = "py-2 rounded-xl text-xs font-mono-code font-bold bg-emerald-950/80 border-emerald-500/50 text-emerald-400";
+          } else {
+            btn.className = "py-2 rounded-xl text-xs font-mono-code font-bold bg-slate-950 border-slate-800 text-slate-400 hover:text-white";
+          }
+        }
+      });
+
+      updatePromptRoleHeader();
+    }
+
+    function navigatePrompt(delta) {
+      const nextIdx = currentPromptIdx + delta;
+      if (nextIdx >= 0 && nextIdx < outcomePrompts.length) {
+        loadPrompt(nextIdx);
+      }
+    }
+
+    function updatePromptRoleHeader() {
+      const p = outcomePrompts[currentPromptIdx];
+      const badge = document.getElementById('prompt-round-badge');
+      const text = document.getElementById('prompt-role-turn-text');
+
+      if (p.id <= 10) {
+        badge.innerText = "Round 1 (Min 02:00 - 05:00)";
+        badge.className = "px-3 py-1 rounded-xl text-xs font-bold font-mono-code bg-amber-950 text-amber-300 border border-amber-700/50";
+        text.innerText = studentRole === 'A' 
+          ? "Customer A Asks | Vendor B Answers" 
+          : "Vendor B Answers | Customer A Asks";
+      } else {
+        badge.innerText = "Round 2: Role Swap (Min 05:00 - 08:00)";
+        badge.className = "px-3 py-1 rounded-xl text-xs font-bold font-mono-code bg-indigo-950 text-indigo-300 border border-indigo-700/50";
+        text.innerText = studentRole === 'A' 
+          ? "Vendor A Answers | Customer B Asks (Swapped)" 
+          : "Customer B Asks | Vendor A Answers (Swapped)";
+      }
+    }
+
+    function speakCurrentDialogueModel() {
+      const p = outcomePrompts[currentPromptIdx];
+      const model = p.getModel();
+
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        const fullText = `${model.a}. ${model.b}`;
+        const utterance = new SpeechSynthesisUtterance(fullText);
+        utterance.rate = 0.85; // A1 student accessible pace
+        utterance.pitch = 1.0;
+        window.speechSynthesis.speak(utterance);
+      }
+    }
+
+    // -------------------------------------------------------------------------
+    // 6. REALTIME GRAMMAR VALIDATION
+    // -------------------------------------------------------------------------
+    function handleGrammarCheck() {
+      const text = document.getElementById('practice-response-input').value.toLowerCase();
+      const p = outcomePrompts[currentPromptIdx];
+      const feedback = document.getElementById('grammar-live-feedback');
+      const hint = document.getElementById('prompt-target-rule-hint');
+
+      hint.innerText = `Keywords: ${p.keywords.join(', ')}`;
+
+      if (!text.trim()) {
+        feedback.innerHTML = `<span class="text-slate-500">Type or speak your answer above.</span>`;
+        return;
+      }
+
+      const matched = p.keywords.some(kw => text.includes(kw));
+
+      if (matched) {
+        feedback.innerHTML = `<span class="text-emerald-400 font-bold"><i class="fa-solid fa-circle-check mr-1"></i> Target price grammar detected!</span>`;
+      } else {
+        feedback.innerHTML = `<span class="text-amber-400"><i class="fa-solid fa-lightbulb mr-1"></i> Tip: Include price keywords (${p.keywords.slice(0, 3).join(', ')}) in your statement.</span>`;
+      }
+    }
+
+    function verifyAndLogTransaction() {
+      const p = outcomePrompts[currentPromptIdx];
+      const inputVal = document.getElementById('practice-response-input').value.trim();
+      const model = p.getModel();
+
+      const savedText = inputVal || model.b;
+      loggedTransactions[p.id] = savedText;
+
+      updateCashRegisterSidebar();
+      loadPrompt(currentPromptIdx);
+
+      if (currentPromptIdx < outcomePrompts.length - 1) {
+        navigatePrompt(1);
+      }
+    }
+
+    function updateCashRegisterSidebar() {
+      const container = document.getElementById('logged-facts-scrollable');
+      const keys = Object.keys(loggedTransactions);
+
+      document.getElementById('logged-facts-counter').innerText = `${keys.length} / 20`;
+
+      if (keys.length === 0) {
+        container.innerHTML = `
+          <div class="text-slate-500 text-center py-10 italic">
+            No items logged yet.<br>Ask questions and click "Verify & Log".
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = '';
+      keys.forEach(idStr => {
+        const idNum = parseInt(idStr);
+        const p = outcomePrompts.find(x => x.id === idNum);
+        const fact = loggedTransactions[idStr];
+
+        const item = document.createElement('div');
+        item.className = "p-2.5 bg-slate-950 rounded-xl border border-slate-800 flex items-start justify-between gap-2";
+        item.innerHTML = `
+          <div class="space-y-0.5">
+            <div class="text-[10px] font-mono-code font-bold text-amber-400">#${p.id} ${p.cat}</div>
+            <div class="text-xs text-slate-200 line-clamp-2">${fact}</div>
+          </div>
+          <i class="fa-solid fa-circle-check text-emerald-400 mt-1"></i>
+        `;
+        container.appendChild(item);
+      });
+    }
+
+    // -------------------------------------------------------------------------
+    // 7. PRINTABLE SHOPPING RECEIPT & CERTIFICATE
+    // -------------------------------------------------------------------------
+    function renderReceiptCertificate() {
+      const count = Object.keys(loggedTransactions).length;
+      const mastery = Math.round((count / 20) * 100);
+
+      let subtotal = 0;
+      outcomePrompts.forEach(p => {
+        if (loggedTransactions[p.id]) {
+          subtotal += p.priceVal;
+        }
+      });
+
+      const finalTotal = Math.max(0, subtotal - 10); // $10 sale applied
+
+      document.getElementById('receipt-completion-count').innerText = `${count} / 20`;
+      document.getElementById('receipt-mastery-score').innerText = `${mastery}%`;
+      document.getElementById('receipt-total-spent').innerText = `$${finalTotal.toFixed(2)}`;
+
+      document.getElementById('calc-subtotal').innerText = `$${subtotal.toFixed(2)}`;
+      document.getElementById('calc-final-total').innerText = `$${finalTotal.toFixed(2)}`;
+
+      const tbody = document.getElementById('receipt-itemized-tbody');
+      tbody.innerHTML = '';
+
+      outcomePrompts.forEach(p => {
+        const log = loggedTransactions[p.id];
+        const tr = document.createElement('tr');
+        tr.className = "border-b border-slate-800/60 hover:bg-slate-900/40";
+        tr.innerHTML = `
+          <td class="py-2.5 px-3 font-mono-code text-amber-400 font-bold">#${p.id}</td>
+          <td class="py-2.5 px-3 font-medium text-slate-300">${p.cat}</td>
+          <td class="py-2.5 px-3 text-slate-200 font-mono-code">${log || p.getModel().b}</td>
+          <td class="py-2.5 px-3 text-right">
+            <span class="text-[10px] px-2 py-0.5 rounded-full font-bold font-mono-code ${log ? 'bg-emerald-950 text-emerald-300 border border-emerald-800' : 'bg-slate-800 text-slate-400'}">
+              ${log ? 'VERIFIED' : 'MODEL'}
+            </span>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function resetFullSession() {
+      loggedTransactions = {};
+      resetTimer();
+      updateCashRegisterSidebar();
+      switchTab('setup');
+      loadPrompt(0);
+    }
+  </script>
+</body>
+</html>
