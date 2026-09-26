@@ -1,0 +1,1166 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CompareSmart - Preferences & Comparative Characteristics Practice (A1 ESL)</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap');
+    
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: #090d16;
+      color: #f8fafc;
+    }
+
+    .font-mono-code {
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0f172a;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #1e293b;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #334155;
+    }
+
+    .card-glow-indigo {
+      box-shadow: 0 0 30px -5px rgba(99, 102, 241, 0.2);
+    }
+    .card-glow-violet {
+      box-shadow: 0 0 30px -5px rgba(139, 92, 246, 0.2);
+    }
+    .card-glow-emerald {
+      box-shadow: 0 0 30px -5px rgba(16, 185, 129, 0.2);
+    }
+
+    /* Print Styles */
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+      #printable-summary, #printable-summary * {
+        visibility: visible;
+      }
+      #printable-summary {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        background: #ffffff !important;
+        color: #0f172a !important;
+        padding: 24px;
+        box-shadow: none !important;
+        border: 2px dashed #0f172a !important;
+      }
+      .no-print {
+        display: none !important;
+      }
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col bg-slate-950 text-slate-100 antialiased selection:bg-indigo-500 selection:text-white">
+
+  <!-- HEADER & LIVE 10-MINUTE HUD -->
+  <header class="border-b border-slate-800/80 bg-slate-900/90 backdrop-blur-md sticky top-0 z-50 no-print">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex flex-wrap items-center justify-between gap-4">
+      
+      <!-- Brand & Title -->
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-indigo-500 via-purple-500 to-pink-500 p-0.5 shadow-lg shadow-indigo-500/20 flex items-center justify-center">
+          <div class="w-full h-full bg-slate-950 rounded-[14px] flex items-center justify-center">
+            <i class="fa-solid fa-code-compare text-indigo-400 text-lg"></i>
+          </div>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 class="font-extrabold text-lg tracking-tight bg-gradient-to-r from-white via-slate-200 to-indigo-300 bg-clip-text text-transparent">CompareSmart</h1>
+            <span class="bg-indigo-950 text-indigo-300 text-[10px] font-bold px-2.5 py-0.5 rounded-full border border-indigo-800">A1 ESL Practice</span>
+          </div>
+          <p class="text-xs text-slate-400 font-medium">Smart Shopper Outlet — Preferences & Characteristics</p>
+        </div>
+      </div>
+
+      <!-- Live 10-Minute HUD Timer & Phase Display -->
+      <div class="flex items-center gap-3 bg-slate-950/90 px-4 py-2 rounded-2xl border border-slate-800 shadow-inner">
+        <div class="text-right">
+          <div class="text-[10px] uppercase tracking-wider font-extrabold text-slate-400" id="hud-stage-title">Stage 1 of 4</div>
+          <div class="text-xs font-bold text-indigo-400" id="hud-phase-name">Product Setup & Roles</div>
+        </div>
+
+        <div class="h-8 w-px bg-slate-800 my-auto"></div>
+
+        <div class="flex items-center gap-3">
+          <div class="text-2xl font-black font-mono-code text-indigo-400 tracking-wider bg-slate-900/90 px-3.5 py-1 rounded-xl border border-indigo-500/30" id="hud-timer-display">10:00</div>
+          <div class="flex items-center gap-1">
+            <button id="btn-timer-toggle" onclick="toggleTimer()" title="Play/Pause Timer" class="w-8 h-8 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white flex items-center justify-center font-bold transition shadow-md shadow-indigo-500/20">
+              <i class="fa-solid fa-play text-xs" id="timer-toggle-icon"></i>
+            </button>
+            <button onclick="resetTimer()" title="Reset Timer" class="w-8 h-8 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 flex items-center justify-center transition border border-slate-700">
+              <i class="fa-solid fa-rotate-right text-xs"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- MAIN NAVIGATION TABS -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 py-6 flex-1 w-full flex flex-col gap-6">
+
+    <nav class="grid grid-cols-1 sm:grid-cols-3 gap-2 bg-slate-900/80 p-1.5 rounded-2xl border border-slate-800 text-xs sm:text-sm font-bold no-print">
+      <button onclick="switchTab('setup')" id="tab-btn-setup" class="py-3 rounded-xl transition flex items-center justify-center gap-2 bg-indigo-600 text-white shadow-lg shadow-indigo-600/20">
+        <i class="fa-solid fa-sliders"></i> <span>1. Setup & Context</span>
+      </button>
+      <button onclick="switchTab('studio')" id="tab-btn-studio" class="py-3 rounded-xl transition flex items-center justify-center gap-2 text-slate-400 hover:text-white">
+        <i class="fa-solid fa-layer-group"></i> <span>2. Comparison Studio</span>
+      </button>
+      <button onclick="switchTab('report')" id="tab-btn-report" class="py-3 rounded-xl transition flex items-center justify-center gap-2 text-slate-400 hover:text-white">
+        <i class="fa-solid fa-certificate"></i> <span>3. Purchase Decision Summary</span>
+      </button>
+    </nav>
+
+    <!-- TAB 1: CONTEXT, ROLES & INSTRUCTIONS -->
+    <section id="tab-sec-setup" class="space-y-6">
+      
+      <!-- Context Banner -->
+      <div class="relative overflow-hidden bg-gradient-to-r from-indigo-950 via-slate-900 to-purple-950 border border-indigo-500/30 p-6 sm:p-8 rounded-3xl card-glow-indigo">
+        <div class="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+          <div class="space-y-3">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-900/60 border border-indigo-700/50 text-indigo-300 text-xs font-bold">
+              <i class="fa-solid fa-bag-shopping"></i> Smart Shopper Outlet
+            </div>
+            <h2 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">Comparing Products & Showing Preferences</h2>
+            <p class="text-xs sm:text-sm text-slate-300 max-w-3xl leading-relaxed">
+              Step into the Smart Shopper Outlet! Work in pairs for <strong>10 minutes</strong>. Compare electronics, clothing, and accessories using comparative adjectives (<em>cheaper than, bigger than, lighter than, faster than, more comfortable than</em>) and express preferences (<em>I prefer..., I like... better</em>).
+            </p>
+          </div>
+          <button onclick="switchTab('studio'); startTimerIfNotStarted();" class="whitespace-nowrap px-6 py-3.5 bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-400 hover:to-purple-400 text-white font-black text-sm rounded-2xl shadow-lg shadow-indigo-500/30 transition flex items-center justify-center gap-2">
+            Enter Comparison Studio <i class="fa-solid fa-arrow-right"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Roles & Modes Selection Grid -->
+      <div class="grid lg:grid-cols-12 gap-6">
+        
+        <!-- Role Configuration Column -->
+        <div class="lg:col-span-5 bg-slate-900 border border-slate-800 p-6 rounded-3xl space-y-6">
+          <div class="border-b border-slate-800 pb-4">
+            <h3 class="font-bold text-white flex items-center gap-2 text-base">
+              <i class="fa-solid fa-user-gear text-indigo-400"></i> Mode & Role Setup
+            </h3>
+            <p class="text-xs text-slate-400 mt-1">Select pair mode for classroom interaction or solo practice with audio synthesis.</p>
+          </div>
+
+          <!-- Practice Mode Selector -->
+          <div class="space-y-2">
+            <label class="text-xs font-bold text-slate-300 block">Practice Mode:</label>
+            <div class="grid grid-cols-2 gap-2 p-1 bg-slate-950 rounded-2xl border border-slate-800 text-xs font-bold">
+              <button onclick="setPracticeMode('pair')" id="mode-btn-pair" class="py-2.5 rounded-xl bg-indigo-600 text-white transition flex items-center justify-center gap-1.5">
+                <i class="fa-solid fa-users"></i> Pair Practice
+              </button>
+              <button onclick="setPracticeMode('solo')" id="mode-btn-solo" class="py-2.5 rounded-xl text-slate-400 hover:text-white transition flex items-center justify-center gap-1.5">
+                <i class="fa-solid fa-user-ninja"></i> Solo Practice
+              </button>
+            </div>
+          </div>
+
+          <!-- Role Selection Cards -->
+          <div class="grid sm:grid-cols-2 gap-3">
+            <label class="cursor-pointer">
+              <input type="radio" name="student-role" value="A" checked onchange="handleRoleChange()" class="peer hidden">
+              <div class="p-4 rounded-2xl border border-slate-800 peer-checked:border-indigo-500 peer-checked:bg-indigo-950/40 bg-slate-950/60 hover:bg-slate-800/50 text-center space-y-2 transition">
+                <div class="w-10 h-10 mx-auto rounded-xl bg-indigo-500/20 text-indigo-400 flex items-center justify-center font-bold text-lg">A</div>
+                <div class="font-bold text-sm text-white">Student A</div>
+                <div class="text-[11px] text-slate-400">Shopping Assistant<br>(Asks Cards 1–10 First)</div>
+              </div>
+            </label>
+
+            <label class="cursor-pointer">
+              <input type="radio" name="student-role" value="B" onchange="handleRoleChange()" class="peer hidden">
+              <div class="p-4 rounded-2xl border border-slate-800 peer-checked:border-purple-500 peer-checked:bg-purple-950/40 bg-slate-950/60 hover:bg-slate-800/50 text-center space-y-2 transition">
+                <div class="w-10 h-10 mx-auto rounded-xl bg-purple-500/20 text-purple-400 flex items-center justify-center font-bold text-lg">B</div>
+                <div class="font-bold text-sm text-white">Student B</div>
+                <div class="text-[11px] text-slate-400">Smart Shopper<br>(Answers Cards 1–10 First)</div>
+              </div>
+            </label>
+          </div>
+
+          <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 text-xs text-slate-300 space-y-1.5" id="role-info-box">
+            <!-- Dynamically populated by JS -->
+          </div>
+        </div>
+
+        <!-- Activity Timeline & Instructions Column -->
+        <div class="lg:col-span-7 bg-slate-900 border border-slate-800 p-6 rounded-3xl space-y-5">
+          <div class="border-b border-slate-800 pb-4">
+            <h3 class="font-bold text-white flex items-center gap-2 text-base">
+              <i class="fa-solid fa-clock-rotate-left text-purple-400"></i> 10-Minute Activity Timeline
+            </h3>
+            <p class="text-xs text-slate-400 mt-1">Structured 4-stage flow for maximum oral interaction.</p>
+          </div>
+
+          <div class="grid sm:grid-cols-2 gap-3 text-xs">
+            <div class="p-4 rounded-2xl bg-slate-950 border border-slate-800 space-y-1">
+              <div class="text-[10px] font-mono-code font-bold text-indigo-400 uppercase">Min 00:00 - 02:00</div>
+              <div class="font-bold text-white text-sm">1. Product Setup</div>
+              <p class="text-slate-400">Review comparative rules (-er than, more ... than, better) and choose roles with your partner.</p>
+            </div>
+
+            <div class="p-4 rounded-2xl bg-slate-950 border border-slate-800 space-y-1">
+              <div class="text-[10px] font-mono-code font-bold text-purple-400 uppercase">Min 02:00 - 05:00</div>
+              <div class="font-bold text-white text-sm">2. Round 1 Comparisons</div>
+              <p class="text-slate-400">Student A asks Prompts 1–10. Student B compares characteristics and states preferences.</p>
+            </div>
+
+            <div class="p-4 rounded-2xl bg-slate-950 border border-slate-800 space-y-1">
+              <div class="text-[10px] font-mono-code font-bold text-emerald-400 uppercase">Min 05:00 - 08:00</div>
+              <div class="font-bold text-white text-sm">3. Round 2 (Role Swap)</div>
+              <p class="text-slate-400">Swap roles! Student B asks Prompts 11–20. Student A compares products and chooses favorites.</p>
+            </div>
+
+            <div class="p-4 rounded-2xl bg-slate-950 border border-slate-800 space-y-1">
+              <div class="text-[10px] font-mono-code font-bold text-pink-400 uppercase">Min 08:00 - 10:00</div>
+              <div class="font-bold text-white text-sm">4. Purchase Decision Report</div>
+              <p class="text-slate-400">Review logged decisions, calculate final score, and generate your printable Smart Shopper Certificate.</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Product Category Overview Grid -->
+      <div class="bg-slate-900 border border-slate-800 p-6 rounded-3xl space-y-4">
+        <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+          <h3 class="font-bold text-white text-sm flex items-center gap-2">
+            <i class="fa-solid fa-tags text-indigo-400"></i> Outlet Product Categories & Grammar Targets
+          </h3>
+          <span class="text-xs text-slate-400 font-mono-code">CEFR A1 Comparatives</span>
+        </div>
+
+        <div class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-7 gap-3 text-center text-xs">
+          <div class="p-3 bg-slate-950 rounded-2xl border border-slate-800 space-y-1">
+            <i class="fa-solid fa-mobile-screen text-indigo-400 text-lg"></i>
+            <div class="font-bold text-white">Phones</div>
+            <div class="text-[10px] text-slate-400">bigger than</div>
+          </div>
+          <div class="p-3 bg-slate-950 rounded-2xl border border-slate-800 space-y-1">
+            <i class="fa-solid fa-laptop text-purple-400 text-lg"></i>
+            <div class="font-bold text-white">Laptops</div>
+            <div class="text-[10px] text-slate-400">cheaper than</div>
+          </div>
+          <div class="p-3 bg-slate-950 rounded-2xl border border-slate-800 space-y-1">
+            <i class="fa-solid fa-shoe-prints text-emerald-400 text-lg"></i>
+            <div class="font-bold text-white">Shoes</div>
+            <div class="text-[10px] text-slate-400">better than</div>
+          </div>
+          <div class="p-3 bg-slate-950 rounded-2xl border border-slate-800 space-y-1">
+            <i class="fa-solid fa-vest text-amber-400 text-lg"></i>
+            <div class="font-bold text-white">Jackets</div>
+            <div class="text-[10px] text-slate-400">nicer than</div>
+          </div>
+          <div class="p-3 bg-slate-950 rounded-2xl border border-slate-800 space-y-1">
+            <i class="fa-solid fa-desktop text-pink-400 text-lg"></i>
+            <div class="font-bold text-white">PCs</div>
+            <div class="text-[10px] text-slate-400">faster than</div>
+          </div>
+          <div class="p-3 bg-slate-950 rounded-2xl border border-slate-800 space-y-1">
+            <i class="fa-solid fa-couch text-teal-400 text-lg"></i>
+            <div class="font-bold text-white">Sofas</div>
+            <div class="text-[10px] text-slate-400">more comfortable</div>
+          </div>
+          <div class="p-3 bg-slate-950 rounded-2xl border border-slate-800 space-y-1">
+            <i class="fa-solid fa-car text-blue-400 text-lg"></i>
+            <div class="font-bold text-white">Cars</div>
+            <div class="text-[10px] text-slate-400">newer than</div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- TAB 2: COMPARISON STUDIO (20 PROMPTS WIZARD) -->
+    <section id="tab-sec-studio" class="hidden space-y-6">
+      
+      <!-- STATUS & ROUND BAR -->
+      <div class="flex flex-wrap items-center justify-between bg-slate-900 p-4 rounded-2xl border border-slate-800 gap-4">
+        <div class="flex items-center gap-3">
+          <span class="px-3 py-1 rounded-xl text-xs font-bold font-mono-code bg-indigo-950 text-indigo-300 border border-indigo-700/50" id="prompt-round-badge">Round 1 (Min 02:00 - 05:00)</span>
+          <span class="text-xs sm:text-sm font-medium text-slate-300" id="prompt-role-turn-text">Student A Asks | Student B Answers</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <button onclick="navigatePrompt(-1)" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl text-xs font-bold transition flex items-center gap-1">
+            <i class="fa-solid fa-chevron-left"></i> Prev
+          </button>
+          <span class="text-xs font-bold font-mono-code text-indigo-400 bg-slate-950 px-3 py-1.5 rounded-xl border border-slate-800" id="prompt-index-indicator">1 / 20</span>
+          <button onclick="navigatePrompt(1)" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl text-xs font-bold transition flex items-center gap-1">
+            Next <i class="fa-solid fa-chevron-right"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- MAIN PROMPT & INTERACTION GRID -->
+      <div class="grid lg:grid-cols-12 gap-6">
+        
+        <!-- PROMPT WORKSPACE (8 Cols) -->
+        <div class="lg:col-span-8 bg-slate-900 border border-slate-800 p-6 rounded-3xl space-y-6 shadow-2xl relative">
+          
+          <!-- Category & Target Grammar Pill -->
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <span class="bg-gradient-to-r from-indigo-500 to-purple-600 text-white text-xs font-extrabold px-3.5 py-1 rounded-full uppercase tracking-wider" id="prompt-category-tag">Jacket Comparison</span>
+            <span class="text-xs font-mono-code bg-slate-950 text-indigo-300 border border-indigo-900 px-3 py-1 rounded-xl" id="prompt-grammar-tag">Rule: "I prefer..." / "...nicer than..."</span>
+          </div>
+
+          <!-- Question Cue Box -->
+          <div class="space-y-1">
+            <div class="text-[11px] uppercase font-bold text-slate-400 tracking-wider">Assistant Question Cue</div>
+            <h3 class="text-xl sm:text-2xl font-black text-white" id="prompt-question-cue">"Which jacket do you prefer, the red jacket or the black jacket?"</h3>
+          </div>
+
+          <!-- SIDE-BY-SIDE PRODUCT COMPARISON CARDS -->
+          <div class="grid sm:grid-cols-2 gap-4" id="side-by-side-product-cards">
+            <!-- Dynamically Populated Option A and Option B -->
+          </div>
+
+          <!-- Dialogue Model Box -->
+          <div class="bg-slate-950 p-5 rounded-2xl border border-slate-800/80 space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-indigo-400 flex items-center gap-1.5">
+                <i class="fa-solid fa-comments"></i> Target A1 Comparative Model
+              </span>
+              <button onclick="speakCurrentDialogueModel()" class="text-xs bg-indigo-950 hover:bg-indigo-900 text-indigo-300 px-3 py-1.5 rounded-xl border border-indigo-800 transition flex items-center gap-1.5 font-semibold">
+                <i class="fa-solid fa-volume-high text-emerald-400"></i> Listen Audio Model
+              </button>
+            </div>
+            
+            <div class="space-y-2 text-xs sm:text-sm font-mono-code p-3.5 bg-slate-900/90 rounded-xl border border-slate-800/60" id="prompt-dialogue-box">
+              <!-- Dynamically populated dialogue lines -->
+            </div>
+          </div>
+
+          <!-- Response Input & Comparative Grammar Feedback -->
+          <div class="space-y-3">
+            <div class="flex items-center justify-between">
+              <label for="practice-response-input" class="text-xs font-bold text-slate-300">Type / Practice Your Answer:</label>
+              <span class="text-[11px] text-slate-400" id="prompt-target-rule-hint">Keywords: "prefer", "black", "nicer"</span>
+            </div>
+            
+            <div class="flex gap-2">
+              <input type="text" id="practice-response-input" oninput="handleGrammarCheck()" placeholder="Type your comparison or preference response here..." class="flex-1 bg-slate-950 border border-slate-800 rounded-2xl px-4 py-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 font-medium">
+              <button onclick="verifyAndLogComparison()" class="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-xs px-5 rounded-2xl transition shadow-lg shadow-emerald-600/20 flex items-center gap-2 whitespace-nowrap">
+                <i class="fa-solid fa-square-check"></i> Verify & Log
+              </button>
+            </div>
+
+            <!-- Real-time Grammar Feedback Indicator -->
+            <div id="grammar-live-feedback" class="text-xs font-medium text-slate-400 min-h-[20px] flex items-center gap-1.5">
+              <!-- Dynamically populated by JS -->
+            </div>
+          </div>
+
+        </div>
+
+        <!-- SIDEBAR: DECISION LOG (4 Cols) -->
+        <div class="lg:col-span-4 bg-slate-900 border border-slate-800 p-5 rounded-3xl space-y-4 flex flex-col justify-between">
+          <div class="space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+              <h4 class="font-bold text-white text-sm flex items-center gap-2">
+                <i class="fa-solid fa-list-check text-purple-400"></i> Shopper Decision Log
+              </h4>
+              <span id="logged-facts-counter" class="text-xs font-mono-code bg-indigo-950 text-indigo-300 px-2.5 py-1 rounded-lg border border-indigo-800/50">0 / 20</span>
+            </div>
+
+            <!-- Scrollable Logged List -->
+            <div id="logged-facts-scrollable" class="space-y-2 text-xs max-h-[360px] overflow-y-auto pr-1">
+              <div class="text-slate-500 text-center py-10 italic">
+                No comparisons logged yet.<br>Answer questions and click "Verify & Log".
+              </div>
+            </div>
+          </div>
+
+          <button onclick="switchTab('report')" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-200 py-3 rounded-2xl font-bold text-xs transition border border-slate-700 flex items-center justify-center gap-2">
+            <span>View Decision Report & Certificate</span> <i class="fa-solid fa-arrow-right"></i>
+          </button>
+        </div>
+
+      </div>
+
+      <!-- 20-PROMPT MATRIX NAVIGATION GRID -->
+      <div class="bg-slate-900 border border-slate-800 p-5 rounded-3xl space-y-3">
+        <div class="flex items-center justify-between text-xs font-bold text-slate-400 uppercase tracking-wider">
+          <span>Prompts Quick Navigation Matrix (1 - 20)</span>
+          <span class="text-slate-500 font-normal">Round 1: 1-10 (Assistant A) | Round 2: 11-20 (Assistant B)</span>
+        </div>
+        <div class="grid grid-cols-5 sm:grid-cols-10 md:grid-cols-20 gap-2" id="prompt-matrix-grid">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+    </section>
+
+    <!-- TAB 3: PURCHASE DECISION SUMMARY & PRINTABLE CERTIFICATE -->
+    <section id="tab-sec-report" class="hidden space-y-6">
+      
+      <!-- Printable Summary Certificate Container -->
+      <div id="printable-summary" class="bg-slate-900 border border-slate-800 p-6 sm:p-10 rounded-3xl max-w-4xl mx-auto space-y-8 card-glow-indigo">
+        
+        <!-- Header Banner -->
+        <div class="text-center space-y-3 border-b border-slate-800/80 pb-6">
+          <div class="inline-flex items-center justify-center w-16 h-16 rounded-3xl bg-gradient-to-tr from-indigo-500 via-purple-500 to-pink-500 text-white shadow-xl text-2xl font-black">
+            <i class="fa-solid fa-certificate"></i>
+          </div>
+          <h2 class="text-2xl sm:text-3xl font-black text-white uppercase tracking-tight">Smart Shopper Preference Certificate</h2>
+          <p class="text-xs sm:text-sm text-slate-400">CEFR A1 Comparative Characteristics & Preferences Mastery</p>
+        </div>
+
+        <!-- Metrics Row -->
+        <div class="grid sm:grid-cols-3 gap-4 bg-slate-950 p-5 rounded-2xl border border-slate-800 text-center">
+          <div class="space-y-1">
+            <div class="text-[10px] uppercase font-bold text-slate-500">Prompts Completed</div>
+            <div class="text-3xl font-black font-mono-code text-indigo-400" id="report-completion-count">0 / 20</div>
+          </div>
+          <div class="space-y-1 border-y sm:border-y-0 sm:border-x border-slate-800 py-3 sm:py-0">
+            <div class="text-[10px] uppercase font-bold text-slate-500">Comparative Grammar Score</div>
+            <div class="text-3xl font-black font-mono-code text-emerald-400" id="report-mastery-score">0%</div>
+          </div>
+          <div class="space-y-1">
+            <div class="text-[10px] uppercase font-bold text-slate-500">Decisions Recorded</div>
+            <div class="text-3xl font-black font-mono-code text-purple-400" id="report-decisions-count">0 Items</div>
+          </div>
+        </div>
+
+        <!-- Itemized Logged Comparisons Table -->
+        <div class="space-y-3">
+          <h4 class="font-bold text-indigo-400 text-xs uppercase tracking-wider flex items-center gap-1.5">
+            <i class="fa-solid fa-list-ol"></i> Itemized Comparison & Preference Statement Log
+          </h4>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs border-collapse">
+              <thead>
+                <tr class="border-b border-slate-800 text-slate-400 font-mono-code">
+                  <th class="py-2.5 px-3">#</th>
+                  <th class="py-2.5 px-3">Product Category</th>
+                  <th class="py-2.5 px-3">Logged Preference / Comparison Statement</th>
+                  <th class="py-2.5 px-3 text-right">Status</th>
+                </tr>
+              </thead>
+              <tbody id="report-itemized-tbody" class="divide-y divide-slate-800/60">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Certificate Signatures -->
+        <div class="flex items-center justify-between border-t border-slate-800 pt-6 text-[11px] text-slate-500 font-mono-code">
+          <div>Verified Outlet: <strong>Smart Shopper Electronics & Fashion</strong></div>
+          <div>Date: <span id="report-date-text">Current Session</span></div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex flex-wrap items-center justify-center gap-4 no-print pt-2">
+          <button onclick="window.print()" class="px-6 py-3 bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs rounded-2xl border border-slate-700 transition flex items-center gap-2">
+            <i class="fa-solid fa-print text-indigo-400"></i> Print Certificate Report
+          </button>
+          <button onclick="resetFullSession()" class="px-6 py-3 bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-400 hover:to-purple-400 text-white font-bold text-xs rounded-2xl shadow-lg transition flex items-center gap-2">
+            <i class="fa-solid fa-rotate-right"></i> Start New Practice Session
+          </button>
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="border-t border-slate-800 bg-slate-950 py-4 text-center text-xs text-slate-500 no-print">
+    <div class="max-w-7xl mx-auto px-4 flex flex-wrap items-center justify-between gap-2">
+      <span>CompareSmart ESL Activity — Target: A1 "Comparing Items & Showing Preferences"</span>
+      <span class="font-mono-code text-[11px] text-slate-600">CEFR A1 • Comparative Adjectives & Preferences</span>
+    </div>
+  </footer>
+
+  <script>
+    // -------------------------------------------------------------------------
+    // 1. DATASET FOR 20 OUTCOME PROMPTS & SIDE-BY-SIDE PRODUCT SPECS
+    // -------------------------------------------------------------------------
+    const outcomePrompts = [
+      {
+        id: 1,
+        cat: "Jackets (Nicer)",
+        cue: "Which jacket do you prefer, the red jacket or the black jacket?",
+        targetRule: "Use 'prefer' + comparative 'nicer'",
+        keywords: ["prefer", "black", "nicer", "jacket"],
+        optA: { name: "Red Jacket", spec1: "$80 Price Tag", spec2: "1.2 kg Weight", spec3: "Classic Style", icon: "fa-vest" },
+        optB: { name: "Black Jacket", spec1: "$95 Price Tag", spec2: "1.0 kg Weight", spec3: "Nicer Style", icon: "fa-vest-patches" },
+        getModel: () => ({
+          a: "A: Which jacket do you prefer, the red jacket or the black jacket?",
+          b: "B: I prefer the black jacket because it is nicer."
+        })
+      },
+      {
+        id: 2,
+        cat: "Smartphones (Bigger)",
+        cue: "Which phone is bigger?",
+        targetRule: "Use 'bigger than'",
+        keywords: ["bigger", "than", "phone A", "6.7"],
+        optA: { name: "Phone A", spec1: "6.7-inch Display", spec2: "$700 Price", spec3: "5G Speed", icon: "fa-mobile-screen-button" },
+        optB: { name: "Phone B", spec1: "5.8-inch Display", spec2: "$600 Price", spec3: "4G Speed", icon: "fa-mobile-screen" },
+        getModel: () => ({
+          a: "A: Which phone is bigger?",
+          b: "B: Phone A is bigger than Phone B."
+        })
+      },
+      {
+        id: 3,
+        cat: "Smartphones (Preference)",
+        cue: "Do you like big or small phones better?",
+        targetRule: "Use 'like... better because...'",
+        keywords: ["like", "small", "better", "carry"],
+        optA: { name: "Big Phone", spec1: "6.7-inch Screen", spec2: "Large Battery", spec3: "Heavy", icon: "fa-mobile-screen-button" },
+        optB: { name: "Small Phone", spec1: "5.8-inch Screen", spec2: "Compact Size", spec3: "Easy to carry", icon: "fa-mobile" },
+        getModel: () => ({
+          a: "A: Do you like big or small phones better?",
+          b: "B: I like small phones better because they are easy to carry."
+        })
+      },
+      {
+        id: 4,
+        cat: "Laptops (Cheaper)",
+        cue: "Which laptop is cheaper?",
+        targetRule: "Use 'cheaper than'",
+        keywords: ["cheaper", "than", "silver", "laptop"],
+        optA: { name: "Silver Laptop", spec1: "$500 Price", spec2: "Core i5", spec3: "Lightweight", icon: "fa-laptop" },
+        optB: { name: "Black Laptop", spec1: "$800 Price", spec2: "Core i7", spec3: "Heavy Duty", icon: "fa-laptop-code" },
+        getModel: () => ({
+          a: "A: Which laptop is cheaper?",
+          b: "B: The silver laptop is cheaper than the black laptop."
+        })
+      },
+      {
+        id: 5,
+        cat: "Laptops (Preference)",
+        cue: "Which laptop do you want to buy?",
+        targetRule: "Use 'I prefer... because it is cheaper'",
+        keywords: ["prefer", "silver", "cheaper"],
+        optA: { name: "Silver Laptop", spec1: "$500 Price", spec2: "Saves Money", spec3: "Silver Finish", icon: "fa-laptop" },
+        optB: { name: "Black Laptop", spec1: "$800 Price", spec2: "Expensive", spec3: "Matte Black", icon: "fa-laptop-code" },
+        getModel: () => ({
+          a: "A: Which laptop do you want to buy?",
+          b: "B: I prefer the silver laptop because it is cheaper."
+        })
+      },
+      {
+        id: 6,
+        cat: "Cars (Newer)",
+        cue: "Which car is newer?",
+        targetRule: "Use 'newer than'",
+        keywords: ["newer", "than", "blue", "car"],
+        optA: { name: "Blue Car", spec1: "2025 Model", spec2: "Electric Engine", spec3: "Automatic", icon: "fa-car" },
+        optB: { name: "White Car", spec1: "2018 Model", spec2: "Gas Engine", spec3: "Manual", icon: "fa-car-side" },
+        getModel: () => ({
+          a: "A: Which car is newer?",
+          b: "B: The blue car is newer than the white car."
+        })
+      },
+      {
+        id: 7,
+        cat: "Backpacks (Lighter)",
+        cue: "Which bag is lighter?",
+        targetRule: "Use 'lighter than'",
+        keywords: ["lighter", "than", "yellow", "bag"],
+        optA: { name: "Yellow Bag", spec1: "0.4 kg Weight", spec2: "Canvas Material", spec3: "Waterproof", icon: "fa-bag-shopping" },
+        optB: { name: "Brown Bag", spec1: "1.2 kg Weight", spec2: "Leather Material", spec3: "Heavy", icon: "fa-briefcase" },
+        getModel: () => ({
+          a: "A: Which bag is lighter?",
+          b: "B: The yellow bag is lighter than the brown bag."
+        })
+      },
+      {
+        id: 8,
+        cat: "Backpacks (Preference)",
+        cue: "Which bag do you like better?",
+        targetRule: "Use 'I prefer... because it is lighter'",
+        keywords: ["prefer", "yellow", "lighter"],
+        optA: { name: "Yellow Bag", spec1: "0.4 kg Weight", spec2: "Easy to carry", spec3: "Bright", icon: "fa-bag-shopping" },
+        optB: { name: "Brown Bag", spec1: "1.2 kg Weight", spec2: "Heavier", spec3: "Formal", icon: "fa-briefcase" },
+        getModel: () => ({
+          a: "A: Which bag do you like better?",
+          b: "B: I prefer the yellow bag because it is lighter."
+        })
+      },
+      {
+        id: 9,
+        cat: "Cameras (Better)",
+        cue: "Which camera is better?",
+        targetRule: "Use irregular comparative 'better than'",
+        keywords: ["better", "than", "camera A"],
+        optA: { name: "Camera A", spec1: "4K Video", spec2: "Pro Lens", spec3: "Fast Focus", icon: "fa-camera" },
+        optB: { name: "Camera B", spec1: "1080p Video", spec2: "Standard Lens", spec3: "Basic Focus", icon: "fa-camera-retro" },
+        getModel: () => ({
+          a: "A: Which camera is better?",
+          b: "B: Camera A is better than Camera B."
+        })
+      },
+      {
+        id: 10,
+        cat: "Footwear (Preference)",
+        cue: "Which shoes do you like better?",
+        targetRule: "Use 'like... better than...'",
+        keywords: ["like", "sports", "better", "boots"],
+        optA: { name: "Sports Shoes", spec1: "$60 Price", spec2: "Soft Cushion", spec3: "Running", icon: "fa-shoe-prints" },
+        optB: { name: "Leather Boots", spec1: "$120 Price", spec2: "Hard Leather", spec3: "Hiking", icon: "fa-socks" },
+        getModel: () => ({
+          a: "A: Which shoes do you like better?",
+          b: "B: I like the sports shoes better than the boots."
+        })
+      },
+      {
+        id: 11,
+        cat: "Computers (Faster)",
+        cue: "Which computer is faster?",
+        targetRule: "Use 'faster than'",
+        keywords: ["faster", "than", "gaming", "laptop"],
+        optA: { name: "Gaming PC", spec1: "3.8 GHz Processor", spec2: "32 GB RAM", spec3: "Fast SSD", icon: "fa-desktop" },
+        optB: { name: "Office PC", spec1: "2.0 GHz Processor", spec2: "8 GB RAM", spec3: "Standard HDD", icon: "fa-computer" },
+        getModel: () => ({
+          a: "A: Which computer is faster?",
+          b: "B: The gaming laptop is faster than the office laptop."
+        })
+      },
+      {
+        id: 12,
+        cat: "Computers (Preference)",
+        cue: "Which computer do you prefer?",
+        targetRule: "Use 'prefer... because it is faster'",
+        keywords: ["prefer", "gaming", "faster"],
+        optA: { name: "Gaming PC", spec1: "High Speed", spec2: "Smooth Games", spec3: "3.8 GHz", icon: "fa-desktop" },
+        optB: { name: "Office PC", spec1: "Normal Speed", spec2: "Basic Tasks", spec3: "2.0 GHz", icon: "fa-computer" },
+        getModel: () => ({
+          a: "A: Which computer do you prefer?",
+          b: "B: I prefer the gaming laptop because it is faster."
+        })
+      },
+      {
+        id: 13,
+        cat: "Watches (Cooler)",
+        cue: "Which watch looks cooler?",
+        targetRule: "Use 'cooler than'",
+        keywords: ["cooler", "than", "smartwatch"],
+        optA: { name: "Smartwatch", spec1: "$200 Price", spec2: "OLED Touch", spec3: "Fitness Tracker", icon: "fa-clock" },
+        optB: { name: "Classic Watch", spec1: "$150 Price", spec2: "Analog Dial", spec3: "Leather Strap", icon: "fa-stopwatch" },
+        getModel: () => ({
+          a: "A: Which watch looks cooler?",
+          b: "B: The smartwatch looks cooler than the classic watch."
+        })
+      },
+      {
+        id: 14,
+        cat: "Shirts (Brighter)",
+        cue: "Which shirt is brighter?",
+        targetRule: "Use 'brighter than'",
+        keywords: ["brighter", "than", "green", "shirt"],
+        optA: { name: "Green Shirt", spec1: "Neon Green", spec2: "Summer Collection", spec3: "Cotton", icon: "fa-shirt" },
+        optB: { name: "Dark Blue Shirt", spec1: "Navy Blue", spec2: "Winter Collection", spec3: "Polyester", icon: "fa-shirt" },
+        getModel: () => ({
+          a: "A: Which shirt is brighter?",
+          b: "B: The green shirt is brighter than the dark blue shirt."
+        })
+      },
+      {
+        id: 15,
+        cat: "Shirts (Color Preference)",
+        cue: "Which shirt do you prefer to wear?",
+        targetRule: "Use 'prefer... because my favorite color is...'",
+        keywords: ["prefer", "green", "favorite", "color"],
+        optA: { name: "Green Shirt", spec1: "Neon Color", spec2: "Casual Wear", spec3: "Bright", icon: "fa-shirt" },
+        optB: { name: "Dark Blue Shirt", spec1: "Dark Color", spec2: "Formal Wear", spec3: "Muted", icon: "fa-shirt" },
+        getModel: () => ({
+          a: "A: Which shirt do you prefer to wear?",
+          b: "B: I prefer the green shirt because my favorite color is green."
+        })
+      },
+      {
+        id: 16,
+        cat: "Furniture (More Comfortable)",
+        cue: "Which chair is more comfortable?",
+        targetRule: "Use multi-syllable comparative 'more comfortable than'",
+        keywords: ["more", "comfortable", "than", "sofa", "leather"],
+        optA: { name: "Leather Sofa", spec1: "Soft Cushion", spec2: "Reclining", spec3: "Plush Material", icon: "fa-couch" },
+        optB: { name: "Wooden Chair", spec1: "Hard Wood", spec2: "Fixed Back", spec3: "Basic Seat", icon: "fa-chair" },
+        getModel: () => ({
+          a: "A: Which chair is more comfortable?",
+          b: "B: The leather sofa is more comfortable than the wooden chair."
+        })
+      },
+      {
+        id: 17,
+        cat: "Furniture (Preference)",
+        cue: "Which sofa do you like better?",
+        targetRule: "Use 'like... better because it is softer'",
+        keywords: ["like", "leather", "better", "softer"],
+        optA: { name: "Leather Sofa", spec1: "Plush & Soft", spec2: "Relaxing", spec3: "Luxury", icon: "fa-couch" },
+        optB: { name: "Wooden Chair", spec1: "Hard Surface", spec2: "Dining", spec3: "Simple", icon: "fa-chair" },
+        getModel: () => ({
+          a: "A: Which sofa do you like better?",
+          b: "B: I like the leather sofa better because it is softer."
+        })
+      },
+      {
+        id: 18,
+        cat: "Gaming (Easier)",
+        cue: "Which video game is easier to play?",
+        targetRule: "Use 'easier than'",
+        keywords: ["easier", "than", "game A"],
+        optA: { name: "Game A", spec1: "Casual Mode", spec2: "Simple Controls", spec3: "For Beginners", icon: "fa-gamepad" },
+        optB: { name: "Game B", spec1: "Hardcore Mode", spec2: "Complex Controls", spec3: "For Experts", icon: "fa-headset" },
+        getModel: () => ({
+          a: "A: Which video game is easier to play?",
+          b: "B: Game A is easier than Game B."
+        })
+      },
+      {
+        id: 19,
+        cat: "Gaming (Preference)",
+        cue: "Which game do you prefer?",
+        targetRule: "Use 'prefer... because it is easier and more fun'",
+        keywords: ["prefer", "game A", "easier", "fun"],
+        optA: { name: "Game A", spec1: "Easy Rules", spec2: "Fun Gameplay", spec3: "Quick Start", icon: "fa-gamepad" },
+        optB: { name: "Game B", spec1: "Hard Rules", spec2: "Long Tutorial", spec3: "Complex", icon: "fa-headset" },
+        getModel: () => ({
+          a: "A: Which game do you prefer?",
+          b: "B: I prefer Game A because it is easier and more fun."
+        })
+      },
+      {
+        id: 20,
+        cat: "Final Decision Summary",
+        cue: "What is your final decision?",
+        targetRule: "Combine comparative adjectives (bigger, faster, better)",
+        keywords: ["final", "choice", "phone A", "because", "better"],
+        optA: { name: "Phone A", spec1: "6.7 inch", spec2: "5G Speed", spec3: "Top Camera", icon: "fa-mobile-screen-button" },
+        optB: { name: "Phone B", spec1: "5.8 inch", spec2: "4G Speed", spec3: "Basic Camera", icon: "fa-mobile-screen" },
+        getModel: () => ({
+          a: "A: What is your final decision?",
+          b: "B: My final choice is Phone A because it is bigger, faster, and better!"
+        })
+      }
+    ];
+
+    // -------------------------------------------------------------------------
+    // 2. GLOBAL APP STATE & TIMER ENGINE
+    // -------------------------------------------------------------------------
+    let practiceMode = 'pair'; // 'pair' or 'solo'
+    let studentRole = 'A'; // 'A' or 'B'
+    let currentPromptIdx = 0;
+    let loggedComparisons = {}; // promptId -> string response
+
+    let timerTotalSeconds = 600; // 10 mins
+    let timerRemaining = 600;
+    let timerInterval = null;
+    let isTimerRunning = false;
+
+    window.onload = function() {
+      renderPromptMatrixGrid();
+      loadPrompt(0);
+      updateRoleInfoBox();
+      document.getElementById('report-date-text').innerText = new Date().toLocaleDateString();
+    };
+
+    function startTimerIfNotStarted() {
+      if (!isTimerRunning && timerRemaining > 0) {
+        toggleTimer();
+      }
+    }
+
+    function toggleTimer() {
+      const toggleIcon = document.getElementById('timer-toggle-icon');
+      if (isTimerRunning) {
+        clearInterval(timerInterval);
+        isTimerRunning = false;
+        toggleIcon.className = "fa-solid fa-play text-xs";
+      } else {
+        isTimerRunning = true;
+        toggleIcon.className = "fa-solid fa-pause text-xs";
+        timerInterval = setInterval(tickTimer, 1000);
+      }
+    }
+
+    function resetTimer() {
+      clearInterval(timerInterval);
+      isTimerRunning = false;
+      timerRemaining = 600;
+      document.getElementById('timer-toggle-icon').className = "fa-solid fa-play text-xs";
+      updateTimerDisplay();
+    }
+
+    function tickTimer() {
+      if (timerRemaining <= 0) {
+        clearInterval(timerInterval);
+        isTimerRunning = false;
+        document.getElementById('timer-toggle-icon').className = "fa-solid fa-play text-xs";
+        updateTimerDisplay();
+        switchTab('report');
+        return;
+      }
+      timerRemaining--;
+      updateTimerDisplay();
+    }
+
+    function updateTimerDisplay() {
+      const m = Math.floor(timerRemaining / 60).toString().padStart(2, '0');
+      const s = (timerRemaining % 60).toString().padStart(2, '0');
+      document.getElementById('hud-timer-display').innerText = `${m}:${s}`;
+
+      const stageTitle = document.getElementById('hud-stage-title');
+      const phaseName = document.getElementById('hud-phase-name');
+
+      if (timerRemaining > 480) { // 00:00 - 02:00
+        stageTitle.innerText = "Stage 1 of 4";
+        phaseName.innerText = "Product Setup & Roles";
+      } else if (timerRemaining > 300) { // 02:00 - 05:00
+        stageTitle.innerText = "Stage 2 of 4";
+        phaseName.innerText = "Round 1 (Assistant A)";
+      } else if (timerRemaining > 120) { // 05:00 - 08:00
+        stageTitle.innerText = "Stage 3 of 4";
+        phaseName.innerText = "Round 2: Role Swap (Assistant B)";
+      } else { // 08:00 - 10:00
+        stageTitle.innerText = "Stage 4 of 4";
+        phaseName.innerText = "Decision Report & Summary";
+      }
+    }
+
+    // -------------------------------------------------------------------------
+    // 3. TABS & MODE HANDLERS
+    // -------------------------------------------------------------------------
+    function switchTab(tab) {
+      document.getElementById('tab-sec-setup').classList.add('hidden');
+      document.getElementById('tab-sec-studio').classList.add('hidden');
+      document.getElementById('tab-sec-report').classList.add('hidden');
+
+      const tabs = ['setup', 'studio', 'report'];
+      const inactiveClass = "py-3 rounded-xl transition flex items-center justify-center gap-2 text-slate-400 hover:text-white";
+      const activeClass = "py-3 rounded-xl transition flex items-center justify-center gap-2 bg-indigo-600 text-white shadow-lg shadow-indigo-600/20 font-extrabold";
+
+      tabs.forEach(t => {
+        const btn = document.getElementById(`tab-btn-${t}`);
+        if (btn) btn.className = inactiveClass;
+      });
+
+      document.getElementById(`tab-sec-${tab}`).classList.remove('hidden');
+      document.getElementById(`tab-btn-${tab}`).className = activeClass;
+
+      if (tab === 'report') renderReportCertificate();
+    }
+
+    function setPracticeMode(mode) {
+      practiceMode = mode;
+      const btnPair = document.getElementById('mode-btn-pair');
+      const btnSolo = document.getElementById('mode-btn-solo');
+
+      if (mode === 'pair') {
+        btnPair.className = "py-2.5 rounded-xl bg-indigo-600 text-white transition flex items-center justify-center gap-1.5";
+        btnSolo.className = "py-2.5 rounded-xl text-slate-400 hover:text-white transition flex items-center justify-center gap-1.5";
+      } else {
+        btnSolo.className = "py-2.5 rounded-xl bg-indigo-600 text-white transition flex items-center justify-center gap-1.5";
+        btnPair.className = "py-2.5 rounded-xl text-slate-400 hover:text-white transition flex items-center justify-center gap-1.5";
+      }
+      updateRoleInfoBox();
+    }
+
+    function handleRoleChange() {
+      const radios = document.getElementsByName('student-role');
+      for (let r of radios) {
+        if (r.checked) {
+          studentRole = r.value;
+          break;
+        }
+      }
+      updateRoleInfoBox();
+      updatePromptRoleHeader();
+    }
+
+    function updateRoleInfoBox() {
+      const box = document.getElementById('role-info-box');
+      if (practiceMode === 'solo') {
+        box.innerHTML = `
+          <div class="font-bold text-indigo-400">Solo Practice Mode Active:</div>
+          <p class="text-slate-300">Practice asking and answering both roles. Click <strong>"Listen Audio Model"</strong> to hear pronunciation.</p>
+        `;
+      } else if (studentRole === 'A') {
+        box.innerHTML = `
+          <div class="font-bold text-indigo-400">Student A (Shopping Assistant):</div>
+          <p class="text-slate-300">You ask comparison questions for <strong>Prompts 1–10</strong>. At Minute 05:00, you swap roles to answer Prompts 11–20.</p>
+        `;
+      } else {
+        box.innerHTML = `
+          <div class="font-bold text-purple-400">Student B (Smart Shopper):</div>
+          <p class="text-slate-300">You compare products and state preferences for <strong>Prompts 1–10</strong>. At Minute 05:00, you swap roles to ask Prompts 11–20.</p>
+        `;
+      }
+    }
+
+    // -------------------------------------------------------------------------
+    // 4. PROMPT WIZARD & SIDE-BY-SIDE PRODUCT RENDERER
+    // -------------------------------------------------------------------------
+    function renderPromptMatrixGrid() {
+      const grid = document.getElementById('prompt-matrix-grid');
+      grid.innerHTML = '';
+
+      outcomePrompts.forEach((p, idx) => {
+        const btn = document.createElement('button');
+        btn.id = `pmatrix-btn-${idx}`;
+        btn.onclick = () => loadPrompt(idx);
+        btn.className = `py-2 rounded-xl text-xs font-mono-code font-bold transition border ${
+          idx === 0 
+            ? 'bg-indigo-600 border-indigo-400 text-white shadow-md shadow-indigo-600/30' 
+            : 'bg-slate-950 border-slate-800 text-slate-400 hover:text-white'
+        }`;
+        btn.innerText = p.id;
+        grid.appendChild(btn);
+      });
+    }
+
+    function loadPrompt(idx) {
+      currentPromptIdx = idx;
+      const p = outcomePrompts[idx];
+      const model = p.getModel();
+
+      document.getElementById('prompt-index-indicator').innerText = `${p.id} / 20`;
+      document.getElementById('prompt-category-tag').innerText = p.cat;
+      document.getElementById('prompt-grammar-tag').innerText = `Rule: ${p.targetRule}`;
+      document.getElementById('prompt-question-cue').innerText = `"${p.cue}"`;
+
+      // Render Side-by-Side Product Cards
+      const sideBySide = document.getElementById('side-by-side-product-cards');
+      sideBySide.innerHTML = `
+        <div class="p-4 bg-slate-950/80 rounded-2xl border border-slate-800 space-y-3 hover:border-indigo-500/40 transition">
+          <div class="flex items-center justify-between">
+            <span class="text-[10px] font-mono-code px-2.5 py-0.5 rounded-full bg-indigo-950 text-indigo-300 border border-indigo-800 font-bold uppercase">Option A</span>
+            <i class="fa-solid ${p.optA.icon} text-indigo-400 text-lg"></i>
+          </div>
+          <div class="font-extrabold text-white text-base">${p.optA.name}</div>
+          <div class="space-y-1 text-xs text-slate-300 font-mono-code">
+            <div class="flex items-center gap-2"><i class="fa-solid fa-check text-indigo-400 text-[10px]"></i> <span>${p.optA.spec1}</span></div>
+            <div class="flex items-center gap-2"><i class="fa-solid fa-check text-indigo-400 text-[10px]"></i> <span>${p.optA.spec2}</span></div>
+            <div class="flex items-center gap-2"><i class="fa-solid fa-check text-indigo-400 text-[10px]"></i> <span>${p.optA.spec3}</span></div>
+          </div>
+        </div>
+
+        <div class="p-4 bg-slate-950/80 rounded-2xl border border-slate-800 space-y-3 hover:border-purple-500/40 transition">
+          <div class="flex items-center justify-between">
+            <span class="text-[10px] font-mono-code px-2.5 py-0.5 rounded-full bg-purple-950 text-purple-300 border border-purple-800 font-bold uppercase">Option B</span>
+            <i class="fa-solid ${p.optB.icon} text-purple-400 text-lg"></i>
+          </div>
+          <div class="font-extrabold text-white text-base">${p.optB.name}</div>
+          <div class="space-y-1 text-xs text-slate-300 font-mono-code">
+            <div class="flex items-center gap-2"><i class="fa-solid fa-check text-purple-400 text-[10px]"></i> <span>${p.optB.spec1}</span></div>
+            <div class="flex items-center gap-2"><i class="fa-solid fa-check text-purple-400 text-[10px]"></i> <span>${p.optB.spec2}</span></div>
+            <div class="flex items-center gap-2"><i class="fa-solid fa-check text-purple-400 text-[10px]"></i> <span>${p.optB.spec3}</span></div>
+          </div>
+        </div>
+      `;
+
+      // Render Dialogue Box
+      document.getElementById('prompt-dialogue-box').innerHTML = `
+        <div class="text-slate-300">${model.a}</div>
+        <div class="text-emerald-300 font-semibold">${model.b}</div>
+      `;
+
+      const input = document.getElementById('practice-response-input');
+      input.value = loggedComparisons[p.id] || "";
+      handleGrammarCheck();
+
+      // Matrix Highlights
+      outcomePrompts.forEach((_, i) => {
+        const btn = document.getElementById(`pmatrix-btn-${i}`);
+        if (btn) {
+          if (i === idx) {
+            btn.className = "py-2 rounded-xl text-xs font-mono-code font-bold bg-indigo-600 border-indigo-400 text-white shadow-md shadow-indigo-600/30";
+          } else if (loggedComparisons[i + 1]) {
+            btn.className = "py-2 rounded-xl text-xs font-mono-code font-bold bg-emerald-950/80 border-emerald-500/50 text-emerald-400";
+          } else {
+            btn.className = "py-2 rounded-xl text-xs font-mono-code font-bold bg-slate-950 border-slate-800 text-slate-400 hover:text-white";
+          }
+        }
+      });
+
+      updatePromptRoleHeader();
+    }
+
+    function navigatePrompt(delta) {
+      const nextIdx = currentPromptIdx + delta;
+      if (nextIdx >= 0 && nextIdx < outcomePrompts.length) {
+        loadPrompt(nextIdx);
+      }
+    }
+
+    function updatePromptRoleHeader() {
+      const p = outcomePrompts[currentPromptIdx];
+      const badge = document.getElementById('prompt-round-badge');
+      const text = document.getElementById('prompt-role-turn-text');
+
+      if (p.id <= 10) {
+        badge.innerText = "Round 1 (Min 02:00 - 05:00)";
+        badge.className = "px-3 py-1 rounded-xl text-xs font-bold font-mono-code bg-indigo-950 text-indigo-300 border border-indigo-700/50";
+        text.innerText = studentRole === 'A' 
+          ? "Assistant A Asks | Shopper B Answers" 
+          : "Shopper B Answers | Assistant A Asks";
+      } else {
+        badge.innerText = "Round 2: Role Swap (Min 05:00 - 08:00)";
+        badge.className = "px-3 py-1 rounded-xl text-xs font-bold font-mono-code bg-purple-950 text-purple-300 border border-purple-700/50";
+        text.innerText = studentRole === 'A' 
+          ? "Shopper A Answers | Assistant B Asks (Swapped)" 
+          : "Assistant B Asks | Shopper A Answers (Swapped)";
+      }
+    }
+
+    function speakCurrentDialogueModel() {
+      const p = outcomePrompts[currentPromptIdx];
+      const model = p.getModel();
+
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        const fullText = `${model.a}. ${model.b}`;
+        const utterance = new SpeechSynthesisUtterance(fullText);
+        utterance.rate = 0.85; // Student accessible pace
+        utterance.pitch = 1.0;
+        window.speechSynthesis.speak(utterance);
+      }
+    }
+
+    // -------------------------------------------------------------------------
+    // 5. REALTIME COMPARATIVE GRAMMAR DETECTOR
+    // -------------------------------------------------------------------------
+    function handleGrammarCheck() {
+      const text = document.getElementById('practice-response-input').value.toLowerCase();
+      const p = outcomePrompts[currentPromptIdx];
+      const feedback = document.getElementById('grammar-live-feedback');
+      const hint = document.getElementById('prompt-target-rule-hint');
+
+      hint.innerText = `Target keywords: ${p.keywords.join(', ')}`;
+
+      if (!text.trim()) {
+        feedback.innerHTML = `<span class="text-slate-500">Type or speak your answer above.</span>`;
+        return;
+      }
+
+      const matched = p.keywords.some(kw => text.includes(kw));
+
+      if (matched) {
+        feedback.innerHTML = `<span class="text-emerald-400 font-bold"><i class="fa-solid fa-circle-check mr-1"></i> Comparative / preference keyword detected!</span>`;
+      } else {
+        feedback.innerHTML = `<span class="text-amber-400"><i class="fa-solid fa-lightbulb mr-1"></i> Tip: Use comparative keywords (${p.keywords.slice(0, 3).join(', ')}) in your statement.</span>`;
+      }
+    }
+
+    function verifyAndLogComparison() {
+      const p = outcomePrompts[currentPromptIdx];
+      const inputVal = document.getElementById('practice-response-input').value.trim();
+      const model = p.getModel();
+
+      const savedText = inputVal || model.b;
+      loggedComparisons[p.id] = savedText;
+
+      updateDecisionSidebar();
+      loadPrompt(currentPromptIdx);
+
+      if (currentPromptIdx < outcomePrompts.length - 1) {
+        navigatePrompt(1);
+      }
+    }
+
+    function updateDecisionSidebar() {
+      const container = document.getElementById('logged-facts-scrollable');
+      const keys = Object.keys(loggedComparisons);
+
+      document.getElementById('logged-facts-counter').innerText = `${keys.length} / 20`;
+
+      if (keys.length === 0) {
+        container.innerHTML = `
+          <div class="text-slate-500 text-center py-10 italic">
+            No comparisons logged yet.<br>Answer questions and click "Verify & Log".
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = '';
+      keys.forEach(idStr => {
+        const idNum = parseInt(idStr);
+        const p = outcomePrompts.find(x => x.id === idNum);
+        const fact = loggedComparisons[idStr];
+
+        const item = document.createElement('div');
+        item.className = "p-2.5 bg-slate-950 rounded-xl border border-slate-800 flex items-start justify-between gap-2";
+        item.innerHTML = `
+          <div class="space-y-0.5">
+            <div class="text-[10px] font-mono-code font-bold text-indigo-400">#${p.id} ${p.cat}</div>
+            <div class="text-xs text-slate-200 line-clamp-2">${fact}</div>
+          </div>
+          <i class="fa-solid fa-circle-check text-emerald-400 mt-1"></i>
+        `;
+        container.appendChild(item);
+      });
+    }
+
+    // -------------------------------------------------------------------------
+    // 6. PRINTABLE DECISION REPORT & CERTIFICATE
+    // -------------------------------------------------------------------------
+    function renderReportCertificate() {
+      const count = Object.keys(loggedComparisons).length;
+      const mastery = Math.round((count / 20) * 100);
+
+      document.getElementById('report-completion-count').innerText = `${count} / 20`;
+      document.getElementById('report-mastery-score').innerText = `${mastery}%`;
+      document.getElementById('report-decisions-count').innerText = `${count} Items`;
+
+      const tbody = document.getElementById('report-itemized-tbody');
+      tbody.innerHTML = '';
+
+      outcomePrompts.forEach(p => {
+        const log = loggedComparisons[p.id];
+        const tr = document.createElement('tr');
+        tr.className = "border-b border-slate-800/60 hover:bg-slate-900/40";
+        tr.innerHTML = `
+          <td class="py-2.5 px-3 font-mono-code text-indigo-400 font-bold">#${p.id}</td>
+          <td class="py-2.5 px-3 font-medium text-slate-300">${p.cat}</td>
+          <td class="py-2.5 px-3 text-slate-200 font-mono-code">${log || p.getModel().b}</td>
+          <td class="py-2.5 px-3 text-right">
+            <span class="text-[10px] px-2 py-0.5 rounded-full font-bold font-mono-code ${log ? 'bg-emerald-950 text-emerald-300 border border-emerald-800' : 'bg-slate-800 text-slate-400'}">
+              ${log ? 'VERIFIED' : 'MODEL'}
+            </span>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function resetFullSession() {
+      loggedComparisons = {};
+      resetTimer();
+      updateDecisionSidebar();
+      switchTab('setup');
+      loadPrompt(0);
+    }
+  </script>
+</body>
+</html>
